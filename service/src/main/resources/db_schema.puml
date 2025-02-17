@@ -1,0 +1,121 @@
+@startuml
+
+entity "user" {
+  +id: UUID
+  +email: VARCHAR(255)
+  +password: VARCHAR(255)
+  +name: VARCHAR(255)
+  +last_name: VARCHAR(255)
+  +role: VARCHAR(32)
+  +address: VARCHAR(255)
+  +birth_date: DATE
+  +created_at: TIMESTAMP
+  +updated_at: TIMESTAMP
+}
+
+entity "wallet" {
+  +id: UUID
+  +owner_id: UUID
+  +currency: VARCHAR(255)
+  +balance: DECIMAL(10, 2)
+  +payment_info: VARCHAR(255)
+  +created_at: TIMESTAMP
+  +updated_at: TIMESTAMP
+}
+
+entity "category" {
+  +id: UUID
+  +name: VARCHAR(64)
+  +description: VARCHAR(255)
+  +created_at: TIMESTAMP
+  +updated_at: TIMESTAMP
+}
+
+entity "item" {
+  +id: UUID
+  +category_id: UUID
+  +seller_id: UUID
+  +purchase_type: VARCHAR(255)
+  +name: VARCHAR(255)
+  +description: VARCHAR(255)
+  +condition: VARCHAR(255)
+  +status: VARCHAR(255)
+  +price: DECIMAL(8, 2)
+  +currency: VARCHAR(255)
+  +image_path: VARCHAR(255)
+  +version: SMALLINT
+  +created_at: TIMESTAMP
+  +updated_at: TIMESTAMP
+}
+
+entity "auction" {
+  +id: UUID
+  +seller_id: UUID
+  +item_id: UUID
+  +bid_id: UUID
+  +starting_price: DECIMAL(8, 2)
+  +min_step: DECIMAL(8, 2)
+  +status: VARCHAR(255)
+  +duration: BIGINT
+  +created_at: TIMESTAMP
+  +updated_at: TIMESTAMP
+  +finished_at: TIMESTAMP
+}
+
+entity "bid" {
+  +id: UUID
+  +auction_id: UUID
+  +user_id: UUID
+  +status: VARCHAR(255)
+  +price: DECIMAL(8, 2)
+  +created_at: TIMESTAMP
+  +updated_at: TIMESTAMP
+}
+
+entity "payment" {
+  +id: UUID
+  +wallet_id: UUID
+  +amount: DECIMAL(8, 2)
+  +currency: VARCHAR(255)
+  +type: VARCHAR(255)
+  +status: VARCHAR(255)
+  +created_at: TIMESTAMP
+  +updated_at: TIMESTAMP
+}
+
+entity "order" {
+  +id: UUID
+  +user_id: UUID
+  +payment_id: UUID
+  +item_id: UUID
+  +status: VARCHAR(255)
+  +created_at: TIMESTAMP
+  +updated_at: TIMESTAMP
+  +expire_at: TIMESTAMP
+}
+
+entity "bid_hold" {
+  +id: UUID
+  +wallet_id: UUID
+  +auction_id: UUID
+  +bid_id: UUID
+  +amount: DECIMAL(8, 2)
+  +currency: VARCHAR(255)
+  +status: VARCHAR(255)
+  +created_at: TIMESTAMP
+  +updated_at: TIMESTAMP
+}
+
+"user" -- "wallet" : "1 - 1"
+"category" -- "item" : "1 - *"
+"user" -- "item" : "1 - *"
+"item" -- "auction" : "1 - 1"
+"auction" -- "bid" : "1 - *"
+"user" -- "bid" : "1 - *"
+"wallet" -- "payment" : "1 - *"
+"payment" -- "order" : "1 - 1"
+"item" -- "order" : "1 - 1"
+"wallet" -- "bid_hold" : "1 - *"
+"auction" -- "bid_hold" : "1 - *"
+
+@enduml
