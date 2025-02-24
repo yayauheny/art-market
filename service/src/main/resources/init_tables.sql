@@ -1,4 +1,4 @@
-CREATE TABLE user
+CREATE TABLE IF NOT EXISTS users
 (
     id         UUID PRIMARY KEY,
     email      VARCHAR(255) NOT NULL UNIQUE,
@@ -8,156 +8,103 @@ CREATE TABLE user
     role       VARCHAR(32)  NOT NULL,
     address    VARCHAR(255),
     birth_date DATE         NOT NULL,
-    created_at TIMESTAMP    NOT NULL,
-    updated_at TIMESTAMP    NOT NULL
+    created_at TIMESTAMP    NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP    NOT NULL DEFAULT NOW()
 );
 
-CREATE TABLE wallet
+CREATE TABLE IF NOT EXISTS wallet
 (
     id           UUID PRIMARY KEY,
-    owner_id     UUID           NOT NULL UNIQUE,
-    currency     VARCHAR(255)   NOT NULL,
+    owner_id     UUID           NOT NULL UNIQUE REFERENCES users (id),
+    currency     CHAR(3)        NOT NULL,
     balance      DECIMAL(10, 2) NOT NULL,
     payment_info VARCHAR(255)   NOT NULL,
-    created_at   TIMESTAMP      NOT NULL,
-    updated_at   TIMESTAMP      NOT NULL,
-
-    CONSTRAINT wallet_owner_id_fk
-        FOREIGN KEY (owner_id)
-            REFERENCES user (id)
+    created_at   TIMESTAMP      NOT NULL DEFAULT NOW(),
+    updated_at   TIMESTAMP      NOT NULL DEFAULT NOW()
 );
 
-CREATE TABLE category
+CREATE TABLE IF NOT EXISTS category
 (
     id          UUID PRIMARY KEY,
-    name        VARCHAR(64) NOT NULL,
+    name        VARCHAR(64) NOT NULL UNIQUE,
     description VARCHAR(255),
-    created_at  TIMESTAMP   NOT NULL,
-    updated_at  TIMESTAMP   NOT NULL
+    created_at  TIMESTAMP   NOT NULL DEFAULT NOW(),
+    updated_at  TIMESTAMP   NOT NULL DEFAULT NOW()
 );
 
-CREATE TABLE item
+CREATE TABLE IF NOT EXISTS item
 (
-    id            UUID PRIMARY KEY,
-    category_id   UUID          NOT NULL,
-    seller_id     UUID          NOT NULL,
-    purchase_type VARCHAR(255)  NOT NULL,
-    name          VARCHAR(255)  NOT NULL,
-    description   VARCHAR(255),
-    condition     VARCHAR(255)  NOT NULL,
-    status        VARCHAR(255)  NOT NULL,
-    price         DECIMAL(8, 2) NOT NULL,
-    currency      VARCHAR(255)  NOT NULL,
-    image_path    VARCHAR(255),
-    version       SMALLINT      NOT NULL,
-    created_at    TIMESTAMP     NOT NULL,
-    updated_at    TIMESTAMP     NOT NULL,
-
-    CONSTRAINT item_category_id_fk
-        FOREIGN KEY (category_id)
-            REFERENCES category (id),
-    CONSTRAINT item_seller_id_fk
-        FOREIGN KEY (seller_id)
-            REFERENCES user (id)
+    id           UUID PRIMARY KEY,
+    category_id  UUID           NOT NULL REFERENCES category (id),
+    seller_id    UUID           NOT NULL REFERENCES users (id),
+    name         VARCHAR(255)   NOT NULL,
+    description  VARCHAR(255),
+    condition    VARCHAR(32)    NOT NULL,
+    payment_type VARCHAR(32)    NOT NULL,
+    status       VARCHAR(32)    NOT NULL,
+    price        DECIMAL(10, 2) NOT NULL,
+    currency     CHAR(3)        NOT NULL,
+    media_path   VARCHAR(255),
+    version      INT            NOT NULL,
+    created_at   TIMESTAMP      NOT NULL DEFAULT NOW(),
+    updated_at   TIMESTAMP      NOT NULL DEFAULT NOW()
 );
 
-CREATE TABLE auction
+CREATE TABLE IF NOT EXISTS auction
 (
-    id             UUID PRIMARY KEY,
-    seller_id      UUID          NOT NULL,
-    item_id        UUID          NOT NULL,
-    bid_id         UUID          NOT NULL,
-    starting_price DECIMAL(8, 2) NOT NULL,
-    min_step       DECIMAL(8, 2) NOT NULL,
-    status         VARCHAR(255)  NOT NULL,
-    duration       BIGINT        NOT NULL,
-    created_at     TIMESTAMP(0)  NOT NULL,
-    updated_at     TIMESTAMP(0)  NOT NULL,
-    finished_at    TIMESTAMP(0)  NOT NULL,
-
-    CONSTRAINT auction_item_id_fk
-        FOREIGN KEY (item_id)
-            REFERENCES item (id),
-    CONSTRAINT auction_seller_id_fk
-        FOREIGN KEY (seller_id)
-            REFERENCES user (id),
-    CONSTRAINT auction_bid_id_fk
-        FOREIGN KEY (bid_id)
-            REFERENCES bid (id)
+    id                UUID PRIMARY KEY,
+    item_id           UUID          NOT NULL REFERENCES item (id),
+    initial_bid_price DECIMAL(8, 2) NOT NULL,
+    min_bid_step      DECIMAL(8, 2) NOT NULL,
+    status            VARCHAR(32)   NOT NULL,
+    created_at        TIMESTAMP     NOT NULL DEFAULT NOW(),
+    updated_at        TIMESTAMP     NOT NULL DEFAULT NOW(),
+    finished_at       TIMESTAMP
 );
 
-CREATE TABLE bid
+CREATE TABLE IF NOT EXISTS bid
 (
     id         UUID PRIMARY KEY,
-    auction_id UUID          NOT NULL,
-    user_id    UUID          NOT NULL,
-    status     VARCHAR(255)  NOT NULL,
+    auction_id UUID          NOT NULL REFERENCES auction (id),
+    user_id    UUID          NOT NULL REFERENCES users (id),
+    status     VARCHAR(32)   NOT NULL,
     price      DECIMAL(8, 2) NOT NULL,
-    created_at TIMESTAMP(0)  NOT NULL,
-    updated_at TIMESTAMP(0)  NOT NULL,
-
-    CONSTRAINT bid_user_id_fk
-        FOREIGN KEY (user_id)
-            REFERENCES user (id),
-    CONSTRAINT bid_auction_id_fk
-        FOREIGN KEY (auction_id)
-            REFERENCES auction (id)
+    created_at TIMESTAMP     NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP     NOT NULL DEFAULT NOW()
 );
 
-CREATE TABLE payment
+CREATE TABLE IF NOT EXISTS payment
 (
     id         UUID PRIMARY KEY,
-    wallet_id  UUID          NOT NULL,
+    wallet_id  UUID          NOT NULL REFERENCES wallet (id),
+    order_id   UUID          NOT NULL REFERENCES orders (id),
     amount     DECIMAL(8, 2) NOT NULL,
-    currency   VARCHAR(255)  NOT NULL,
-    type       VARCHAR(255)  NOT NULL,
-    status     VARCHAR(255)  NOT NULL,
-    created_at TIMESTAMP(0)  NOT NULL,
-    updated_at TIMESTAMP(0)  NOT NULL,
-
-    CONSTRAINT payment_wallet_id_fk
-        FOREIGN KEY (wallet_id)
-            REFERENCES wallet (id)
+    currency   CHAR(3)       NOT NULL,
+    status     VARCHAR(32)   NOT NULL,
+    created_at TIMESTAMP     NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP     NOT NULL DEFAULT NOW()
 );
 
-CREATE TABLE order
+CREATE TABLE IF NOT EXISTS orders
 (
     id         UUID PRIMARY KEY,
-    user_id    UUID         NOT NULL,
-    payment_id UUID         NOT NULL UNIQUE,
-    item_id    UUID         NOT NULL,
-    status     VARCHAR(255) NOT NULL CHECK (status IN ('pending', 'paid', 'canceled')),
-    created_at TIMESTAMP(0) NOT NULL,
-    updated_at TIMESTAMP(0) NOT NULL,
-    expire_at  TIMESTAMP(0) NOT NULL,
-
-    CONSTRAINT order_user_id_fk
-        FOREIGN KEY (user_id)
-            REFERENCES user (id),
-    CONSTRAINT order_item_id_fk
-        FOREIGN KEY (item_id)
-            REFERENCES item (id),
-    CONSTRAINT order_payment_id_fk
-        FOREIGN KEY (payment_id)
-            REFERENCES payment (id)
+    user_id    UUID        NOT NULL REFERENCES users (id),
+    item_id    UUID        NOT NULL REFERENCES item (id),
+    status     VARCHAR(32) NOT NULL,
+    created_at TIMESTAMP   NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP   NOT NULL DEFAULT NOW(),
+    expire_at  TIMESTAMP   NOT NULL
 );
 
-CREATE TABLE bid_hold
+CREATE TABLE IF NOT EXISTS bid_hold_balance
 (
     id         UUID PRIMARY KEY,
-    wallet_id  UUID          NOT NULL,
-    auction_id UUID          NOT NULL,
-    bid_id     UUID          NOT NULL,
+    wallet_id  UUID          NOT NULL REFERENCES wallet (id),
+    auction_id UUID          NOT NULL REFERENCES auction (id),
+    bid_id     UUID          NOT NULL REFERENCES bid (id),
     amount     DECIMAL(8, 2) NOT NULL,
-    currency   VARCHAR(255)  NOT NULL,
-    status     VARCHAR(255)  NOT NULL,
-    created_at TIMESTAMP     NOT NULL,
-    updated_at TIMESTAMP     NOT NULL,
-
-    CONSTRAINT bid_hold_wallet_id_fk
-        FOREIGN KEY (wallet_id)
-            REFERENCES wallet (id),
-    CONSTRAINT bid_hold_auction_id_fk
-        FOREIGN KEY (auction_id)
-            REFERENCES auction (id)
+    currency   CHAR(3)       NOT NULL,
+    status     VARCHAR(32)   NOT NULL,
+    created_at TIMESTAMP     NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP     NOT NULL DEFAULT NOW()
 );
