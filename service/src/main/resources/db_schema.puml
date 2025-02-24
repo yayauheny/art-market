@@ -1,0 +1,155 @@
+@startuml
+
+' Table: users
+entity "users" {
+  * id : UUID <<PK>>
+  * email : VARCHAR(255) <<Unique>>
+  * password : VARCHAR(255)
+  * name : VARCHAR(255)
+  * last_name : VARCHAR(255)
+  * role : VARCHAR(32)
+  * address : VARCHAR(255)
+  * birth_date : DATE
+  * created_at : TIMESTAMP
+  * updated_at : TIMESTAMP
+}
+
+' Table: wallet
+entity "wallet" {
+  * id : UUID <<PK>>
+  * owner_id : UUID <<FK, Unique>>
+  * currency : CHAR(3)
+  * balance : DECIMAL(10, 2)
+  * payment_info : VARCHAR(255)
+  * created_at : TIMESTAMP
+  * updated_at : TIMESTAMP
+}
+
+' Table: category
+entity "category" {
+  * id : UUID <<PK>>
+  * name : VARCHAR(64) <<Unique>>
+  * description : VARCHAR(255)
+  * created_at : TIMESTAMP
+  * updated_at : TIMESTAMP
+}
+
+' Table: item
+entity "item" {
+  * id : UUID <<PK>>
+  * category_id : UUID <<FK>>
+  * seller_id : UUID <<FK>>
+  * name : VARCHAR(255)
+  * description : VARCHAR(255)
+  * condition : VARCHAR(32)
+  * payment_type : VARCHAR(32)
+  * status : VARCHAR(32)
+  * price : DECIMAL(10, 2)
+  * currency : CHAR(3)
+  * media_path : VARCHAR(255)
+  * version : INT
+  * created_at : TIMESTAMP
+  * updated_at : TIMESTAMP
+}
+
+' Table: auction
+entity "auction" {
+  * id : UUID <<PK>>
+  * item_id : UUID <<FK>>
+  * initial_bid_price : DECIMAL(8, 2)
+  * min_bid_step : DECIMAL(8, 2)
+  * status : VARCHAR(32)
+  * created_at : TIMESTAMP
+  * updated_at : TIMESTAMP
+  * finished_at : TIMESTAMP
+}
+
+' Table: bid
+entity "bid" {
+  * id : UUID <<PK>>
+  * auction_id : UUID <<FK>>
+  * user_id : UUID <<FK>>
+  * status : VARCHAR(32)
+  * price : DECIMAL(8, 2)
+  * created_at : TIMESTAMP
+  * updated_at : TIMESTAMP
+}
+
+' Table: orders
+entity "orders" {
+  * id : UUID <<PK>>
+  * user_id : UUID <<FK>>
+  * item_id : UUID <<FK>>
+  * status : VARCHAR(32)
+  * created_at : TIMESTAMP
+  * updated_at : TIMESTAMP
+  * expire_at : TIMESTAMP
+}
+
+' Table: payment
+entity "payment" {
+  * id : UUID <<PK>>
+  * wallet_id : UUID <<FK>>
+  * order_id : UUID <<FK>>
+  * amount : DECIMAL(8, 2)
+  * currency : CHAR(3)
+  * status : VARCHAR(32)
+  * created_at : TIMESTAMP
+  * updated_at : TIMESTAMP
+}
+
+' Table: bid_hold_balance
+entity "bid_hold_balance" {
+  * id : UUID <<PK>>
+  * wallet_id : UUID <<FK>>
+  * auction_id : UUID <<FK>>
+  * bid_id : UUID <<FK>>
+  * amount : DECIMAL(8, 2)
+  * currency : CHAR(3)
+  * status : VARCHAR(32)
+  * created_at : TIMESTAMP
+  * updated_at : TIMESTAMP
+}
+
+' Relationships
+
+' wallet.owner_id references users.id (One-to-One)
+users ||--|| wallet : owner_id
+
+' item.category_id references category.id (Many items belong to one category)
+category ||--o{ item : category_id
+
+' item.seller_id references users.id (Many items sold by one user)
+users ||--o{ item : seller_id
+
+' auction.item_id references item.id (Many auctions for items)
+item ||--o{ auction : item_id
+
+' bid.auction_id references auction.id (Many bids in one auction)
+auction ||--o{ bid : auction_id
+
+' bid.user_id references users.id (Many bids by one user)
+users ||--o{ bid : user_id
+
+' orders.user_id references users.id (Many orders by one user)
+users ||--o{ orders : user_id
+
+' orders.item_id references item.id (Many orders for one item)
+item ||--o{ orders : item_id
+
+' payment.wallet_id references wallet.id (Many payments from one wallet)
+wallet ||--o{ payment : wallet_id
+
+' payment.order_id references orders.id (Many payments per order)
+orders ||--o{ payment : order_id
+
+' bid_hold_balance.wallet_id references wallet.id (Many hold balances from one wallet)
+wallet ||--o{ bid_hold_balance : wallet_id
+
+' bid_hold_balance.auction_id references auction.id (Many hold balances per auction)
+auction ||--o{ bid_hold_balance : auction_id
+
+' bid_hold_balance.bid_id references bid.id (Many hold balances per bid)
+bid ||--o{ bid_hold_balance : bid_id
+
+@enduml
