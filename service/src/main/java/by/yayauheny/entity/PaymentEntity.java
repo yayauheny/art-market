@@ -25,11 +25,6 @@ import lombok.NoArgsConstructor;
 @Entity(name = "payment")
 public class PaymentEntity {
 
-//  type       VARCHAR(32)   NOT NULL,
-//  status     VARCHAR(32)   NOT NULL,
-//  created_at TIMESTAMP     NOT NULL DEFAULT NOW(),
-//  updated_at TIMESTAMP     NOT NULL DEFAULT NOW()
-
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
