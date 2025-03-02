@@ -22,7 +22,7 @@ import lombok.ToString;
 
 @Data
 @EqualsAndHashCode(of = "email")
-@ToString(exclude = {"wallet", "itemsForSale"})
+@ToString(exclude = {"wallet", "itemsForSale", "bids", "orders"})
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "users")

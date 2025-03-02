@@ -36,7 +36,7 @@ public class BidEntity {
   @JoinColumn(name = "auction_id", nullable = false)
   private AuctionEntity auction;
 
-  @ManyToOne(optional = false)
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "user_id", nullable = false)
   private UserEntity user;
 

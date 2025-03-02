@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
-@EqualsAndHashCode(exclude = "items")
+@EqualsAndHashCode(of = "name")
 @ToString(exclude = "items")
 @NoArgsConstructor
 @AllArgsConstructor
@@ -42,5 +42,5 @@ public class CategoryEntity {
   private Instant updatedAt;
 
   @OneToMany(mappedBy = "category")
-  List<ItemEntity> items;
+  private List<ItemEntity> items;
 }

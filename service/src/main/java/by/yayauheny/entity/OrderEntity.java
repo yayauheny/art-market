@@ -24,8 +24,8 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
-@EqualsAndHashCode(exclude = {"user", "payments", "item"})
-@ToString(exclude = {"user", "payments", "item"})
+@EqualsAndHashCode(exclude = {"user", "item", "payments"})
+@ToString(exclude = {"user", "item", "payments"})
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "orders")
@@ -39,14 +39,11 @@ public class OrderEntity {
   @JoinColumn(name = "user_id", nullable = false)
   private UserEntity user;
 
-  @OneToMany(mappedBy = "order")
-  private List<PaymentEntity> payments;
-
   @OneToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "item_id", nullable = false)
   private ItemEntity item;
 
-  @Column(nullable = false)
+  @Column(nullable = false, length = 32)
   @Enumerated(EnumType.STRING)
   private OrderStatus status;
 
@@ -58,4 +55,7 @@ public class OrderEntity {
 
   @Column(nullable = false)
   private LocalDateTime expireAt;
+
+  @OneToMany(mappedBy = "order")
+  private List<PaymentEntity> payments;
 }

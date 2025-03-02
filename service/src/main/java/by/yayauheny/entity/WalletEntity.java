@@ -23,8 +23,8 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
-@EqualsAndHashCode(exclude = {"owner", "wallet"})
-@ToString(exclude = {"owner", "wallet"})
+@EqualsAndHashCode(exclude = {"owner", "payments", "bidHolds"})
+@ToString(exclude = {"owner", "payments", "bidHolds"})
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "wallet")

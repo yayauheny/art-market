@@ -33,15 +33,15 @@ public class BidHoldBalanceEntity {
   private UUID id;
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "wallet_id")
+  @JoinColumn(name = "wallet_id", nullable = false)
   private WalletEntity wallet;
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "auction_id")
+  @JoinColumn(name = "auction_id", nullable = false)
   private AuctionEntity auction;
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "bid_id")
+  @JoinColumn(name = "bid_id", nullable = false)
   private BidEntity bid;
 
   @Column(nullable = false, precision = 8, scale = 2)

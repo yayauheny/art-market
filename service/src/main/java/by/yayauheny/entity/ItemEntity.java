@@ -38,17 +38,13 @@ public class ItemEntity {
   @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
 
-  @ManyToOne(optional = false)
-  @JoinColumn(name = "category_id")
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "category_id", nullable = false)
   private CategoryEntity category;
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "seller_id")
+  @JoinColumn(name = "seller_id", nullable = false)
   private UserEntity seller;
-
-  @Column(nullable = false, length = 32)
-  @Enumerated(EnumType.STRING)
-  private PaymentType paymentType;
 
   @Column(nullable = false)
   private String name;
@@ -58,6 +54,10 @@ public class ItemEntity {
   @Column(nullable = false, length = 32)
   @Enumerated(EnumType.STRING)
   private ItemConditionType condition;
+
+  @Column(nullable = false, length = 32)
+  @Enumerated(EnumType.STRING)
+  private PaymentType paymentType;
 
   @Column(nullable = false, length = 32)
   @Enumerated(EnumType.STRING)

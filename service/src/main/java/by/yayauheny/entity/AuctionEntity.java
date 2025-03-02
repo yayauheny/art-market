@@ -23,8 +23,8 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
-@EqualsAndHashCode(exclude = {"item", "bids"})
-@ToString(exclude = {"item", "bids"})
+@EqualsAndHashCode(exclude = {"item", "bids", "heldBalances"})
+@ToString(exclude = {"item", "bids", "heldBalances"})
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "auction")
@@ -44,7 +44,7 @@ public class AuctionEntity {
   @Column(nullable = false, precision = 8, scale = 2)
   private BigDecimal minBidStep;
 
-  @Column(nullable = false)
+  @Column(nullable = false, length = 32)
   @Enumerated(EnumType.STRING)
   private AuctionStatus status;
 
