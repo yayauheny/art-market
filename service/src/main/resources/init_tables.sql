@@ -8,8 +8,8 @@ CREATE TABLE IF NOT EXISTS users
     role       VARCHAR(32)  NOT NULL,
     address    VARCHAR(255),
     birth_date DATE         NOT NULL,
-    created_at TIMESTAMP    NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMP    NOT NULL DEFAULT NOW()
+    created_at TIMESTAMP    DEFAULT NOW(),
+    updated_at TIMESTAMP    DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS wallet
@@ -73,6 +73,17 @@ CREATE TABLE IF NOT EXISTS bid
     updated_at TIMESTAMP     NOT NULL DEFAULT NOW()
 );
 
+CREATE TABLE IF NOT EXISTS orders
+(
+    id         UUID PRIMARY KEY,
+    user_id    UUID        NOT NULL REFERENCES users (id),
+    item_id    UUID        NOT NULL REFERENCES item (id),
+    status     VARCHAR(32) NOT NULL,
+    created_at TIMESTAMP   NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP   NOT NULL DEFAULT NOW(),
+    expire_at  TIMESTAMP   NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS payment
 (
     id         UUID PRIMARY KEY,
@@ -83,17 +94,6 @@ CREATE TABLE IF NOT EXISTS payment
     status     VARCHAR(32)   NOT NULL,
     created_at TIMESTAMP     NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP     NOT NULL DEFAULT NOW()
-);
-
-CREATE TABLE IF NOT EXISTS orders
-(
-    id         UUID PRIMARY KEY,
-    user_id    UUID        NOT NULL REFERENCES users (id),
-    item_id    UUID        NOT NULL REFERENCES item (id),
-    status     VARCHAR(32) NOT NULL,
-    created_at TIMESTAMP   NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMP   NOT NULL DEFAULT NOW(),
-    expire_at  TIMESTAMP   NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS bid_hold_balance

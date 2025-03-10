@@ -1,6 +1,7 @@
 package by.yayauheny.entity;
 
 import by.yayauheny.enums.OrderStatus;
+import by.yayauheny.enums.PaymentType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -15,15 +16,18 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
+@Builder(toBuilder = true)
 @EqualsAndHashCode(exclude = {"user", "item", "payments"})
 @ToString(exclude = {"user", "item", "payments"})
 @NoArgsConstructor
@@ -54,8 +58,14 @@ public class OrderEntity {
   private Instant updatedAt;
 
   @Column(nullable = false)
-  private LocalDateTime expireAt;
+  private Instant expireAt;
 
   @OneToMany(mappedBy = "order")
-  private List<PaymentEntity> payments;
+  @Builder.Default
+  private List<PaymentEntity> payments = new ArrayList<>();
+
+  public void addPayment(PaymentEntity payment){
+    payments.add(payment);
+    payment.setOrder(this);
+  }
 }

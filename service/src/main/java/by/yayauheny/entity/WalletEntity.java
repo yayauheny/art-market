@@ -13,16 +13,19 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Currency;
 import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
+@Builder(toBuilder = true)
 @EqualsAndHashCode(exclude = {"owner", "payments", "bidHolds"})
 @ToString(exclude = {"owner", "payments", "bidHolds"})
 @NoArgsConstructor
@@ -54,8 +57,20 @@ public class WalletEntity {
   private Instant updatedAt;
 
   @OneToMany(mappedBy = "wallet")
-  private List<PaymentEntity> payments;
+  @Builder.Default
+  private List<PaymentEntity> payments = new ArrayList<>();
 
   @OneToMany(mappedBy = "wallet")
-  private List<BidHoldBalanceEntity> bidHolds;
+  @Builder.Default
+  private List<BidHoldBalanceEntity> bidHolds = new ArrayList<>();
+
+  public void addPayment(PaymentEntity payment) {
+    payments.add(payment);
+    payment.setWallet(this);
+  }
+
+  public void addBidHold(BidHoldBalanceEntity bidHoldBalance) {
+    bidHolds.add(bidHoldBalance);
+    bidHoldBalance.setWallet(this);
+  }
 }

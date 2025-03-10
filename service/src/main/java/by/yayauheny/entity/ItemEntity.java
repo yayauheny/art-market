@@ -18,15 +18,18 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Version;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
+@Builder(toBuilder = true)
 @EqualsAndHashCode(exclude = {"category", "seller", "auctions", "order"})
 @ToString(exclude = {"category", "seller", "auctions", "order"})
 @NoArgsConstructor
@@ -82,8 +85,19 @@ public class ItemEntity {
   private Instant updatedAt;
 
   @OneToMany(mappedBy = "item")
-  private List<AuctionEntity> auctions;
+  @Builder.Default
+  private List<AuctionEntity> auctions = new ArrayList<>();
 
   @OneToOne(mappedBy = "item")
   private OrderEntity order;
+
+  public void setOrder(OrderEntity order) {
+    this.order = order;
+    order.setItem(this);
+  }
+
+  public void addAuction(AuctionEntity auction) {
+    auctions.add(auction);
+    auction.setItem(this);
+  }
 }

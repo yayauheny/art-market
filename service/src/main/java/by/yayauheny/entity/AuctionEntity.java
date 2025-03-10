@@ -14,15 +14,18 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
+@Builder(toBuilder = true)
 @EqualsAndHashCode(exclude = {"item", "bids", "heldBalances"})
 @ToString(exclude = {"item", "bids", "heldBalances"})
 @NoArgsConstructor
@@ -57,8 +60,15 @@ public class AuctionEntity {
   private Instant finishedAt;
 
   @OneToMany(mappedBy = "auction")
-  private List<BidEntity> bids;
+  @Builder.Default
+  private List<BidEntity> bids = new ArrayList<>();
 
   @OneToMany(mappedBy = "auction")
-  private List<BidHoldBalanceEntity> heldBalances;
+  @Builder.Default
+  private List<BidHoldBalanceEntity> heldBalances = new ArrayList<>();
+
+  public void addBid(BidEntity bid) {
+    bids.add(bid);
+    bid.setAuction(this);
+  }
 }
