@@ -77,14 +77,13 @@ class WalletEntityIT extends IntegrationBaseTest {
   void update_updatedWalletCurrency_updated() {
     var user = TestDataUtil.getUser("john.doe@example.com");
     var userWallet = TestDataUtil.getWallet(user);
-    var updatedCurrency = "PLN";
     session.persist(user);
     session.persist(userWallet);
     session.flush();
     session.clear();
     var savedWallet = session.get(WalletEntity.class, userWallet.getId());
 
-    savedWallet.setCurrency(updatedCurrency);
+    savedWallet.setCurrency("PLN");
     session.merge(savedWallet);
     session.flush();
     session.clear();

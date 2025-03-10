@@ -26,8 +26,8 @@ import lombok.ToString;
 
 @Data
 @Builder(toBuilder = true)
-@EqualsAndHashCode(exclude = {"owner", "payments", "bidHolds"})
-@ToString(exclude = {"owner", "payments", "bidHolds"})
+@EqualsAndHashCode(exclude = {"owner", "payments", "bidHoldBalances"})
+@ToString(exclude = {"owner", "payments", "bidHoldBalances"})
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "wallet")

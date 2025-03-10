@@ -98,7 +98,6 @@ class AuctionEntityIT extends IntegrationBaseTest {
     var category = TestDataUtil.getCategory("paintings");
     var item = TestDataUtil.getItem("Still life Raphael", category, seller);
     var auction = TestDataUtil.getAuctionEntity(item, clock);
-    BigDecimal updatedInitialBidPrice = BigDecimal.ZERO.setScale(2, RoundingMode.CEILING);
     session.persist(seller);
     session.persist(category);
     session.persist(item);
@@ -107,7 +106,7 @@ class AuctionEntityIT extends IntegrationBaseTest {
     session.clear();
     var savedAuction = session.get(AuctionEntity.class, auction.getId());
 
-    savedAuction.setInitialBidPrice(updatedInitialBidPrice);
+    savedAuction.setInitialBidPrice(BigDecimal.ZERO.setScale(2, RoundingMode.CEILING));
     session.merge(savedAuction);
     session.flush();
     session.clear();

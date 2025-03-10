@@ -89,7 +89,6 @@ class ItemEntityIT extends IntegrationBaseTest {
     UserEntity seller = TestDataUtil.getUser("john2.doe@example.com");
     var category = TestDataUtil.getCategory("paintings");
     var item = TestDataUtil.getItem("Still life Raphael", category, seller);
-    ItemTransactionStatus updatedStatus = ItemTransactionStatus.ACTIVE;
     session.persist(seller);
     session.persist(category);
     session.persist(item);
@@ -97,7 +96,7 @@ class ItemEntityIT extends IntegrationBaseTest {
     session.clear();
     var savedItem = session.get(ItemEntity.class, item.getId());
 
-    savedItem.setStatus(updatedStatus);
+    savedItem.setStatus(ItemTransactionStatus.ACTIVE);
     session.merge(savedItem);
     session.flush();
     session.clear();

@@ -120,7 +120,6 @@ class BidEntityIT extends IntegrationBaseTest {
     var auction = TestDataUtil.getAuctionEntity(item, clock);
     BigDecimal bidPrice = BigDecimal.TEN;
     var bid = TestDataUtil.getBid(auction, bidOwner, bidPrice);
-    BidStatus updatedBidStatus = BidStatus.WON;
     session.persist(seller);
     session.persist(bidOwner);
     session.persist(category);
@@ -131,7 +130,7 @@ class BidEntityIT extends IntegrationBaseTest {
     session.clear();
     var savedBid = session.get(BidEntity.class, bid.getId());
 
-    savedBid.setStatus(updatedBidStatus);
+    savedBid.setStatus(BidStatus.WON);
     session.merge(savedBid);
     session.flush();
     session.clear();

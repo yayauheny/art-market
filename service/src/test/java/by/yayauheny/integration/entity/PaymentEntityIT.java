@@ -135,7 +135,6 @@ class PaymentEntityIT extends IntegrationBaseTest {
     var item = TestDataUtil.getItem("Still life Raphael", category, seller);
     var order = TestDataUtil.getOrder(buyer, item, clock);
     var payment = TestDataUtil.getPayment(buyerWallet, order);
-    PaymentStatus updatedStatus = PaymentStatus.FAILED;
     session.persist(seller);
     session.persist(buyer);
     session.persist(sellerWallet);
@@ -148,7 +147,7 @@ class PaymentEntityIT extends IntegrationBaseTest {
     session.clear();
     var savedPayment = session.get(PaymentEntity.class, payment.getId());
 
-    savedPayment.setStatus(updatedStatus);
+    savedPayment.setStatus(PaymentStatus.FAILED);
     session.merge(savedPayment);
     session.flush();
     session.clear();

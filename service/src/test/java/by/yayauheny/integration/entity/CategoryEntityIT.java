@@ -68,13 +68,12 @@ class CategoryEntityIT extends IntegrationBaseTest {
   @Test
   void update_updatedCategoryDescription_updated() {
     var category = TestDataUtil.getCategory("paintings");
-    var updatedDescription = "updated description";
     session.persist(category);
     session.flush();
     session.clear();
     var savedCategory = session.get(CategoryEntity.class, category.getId());
 
-    savedCategory.setDescription(updatedDescription);
+    savedCategory.setDescription("updated description");
     session.merge(savedCategory);
     session.flush();
     session.clear();

@@ -106,7 +106,6 @@ class OrderEntityIT extends IntegrationBaseTest {
     var category = TestDataUtil.getCategory("paintings");
     var item = TestDataUtil.getItem("Still life Raphael", category, seller);
     var order = TestDataUtil.getOrder(buyer, item, clock);
-    var updatedStatus = OrderStatus.CANCELED;
     session.persist(seller);
     session.persist(buyer);
     session.persist(category);
@@ -116,7 +115,7 @@ class OrderEntityIT extends IntegrationBaseTest {
     session.clear();
     var savedOrder = session.get(OrderEntity.class, order.getId());
 
-    savedOrder.setStatus(updatedStatus);
+    savedOrder.setStatus(OrderStatus.CANCELED);
     session.merge(savedOrder);
     session.flush();
     session.clear();

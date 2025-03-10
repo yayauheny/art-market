@@ -80,14 +80,13 @@ class UserEntityIT extends IntegrationBaseTest {
   void update_updatedUserAddress_updated() {
     var user = TestDataUtil.getUser("john.doe@example.com");
     var userWallet = TestDataUtil.getWallet(user);
-    var updatedAddress = "updated address";
     session.persist(user);
     session.persist(userWallet);
     session.flush();
     session.clear();
     var savedUser = session.get(UserEntity.class, user.getId());
 
-    savedUser.setAddress(updatedAddress);
+    savedUser.setAddress("updated address");
     session.merge(savedUser);
     session.flush();
     session.clear();
