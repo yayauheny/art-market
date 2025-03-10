@@ -3,7 +3,9 @@ package by.yayauheny.integration.entity;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import by.yayauheny.entity.BidEntity;
+import by.yayauheny.entity.BidHoldBalanceEntity;
 import by.yayauheny.entity.UserEntity;
+import by.yayauheny.enums.BidHoldBalanceStatus;
 import by.yayauheny.enums.BidStatus;
 import by.yayauheny.integration.IntegrationBaseTest;
 import by.yayauheny.util.TestDataUtil;
@@ -13,59 +15,70 @@ import java.util.Objects;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 
-class BidEntityIT extends IntegrationBaseTest {
+class BidHoldBalanceEntityIT extends IntegrationBaseTest {
+
 
   @Test
-  void save_validBid_saved() {
+  void save_validBidHoldBalance_saved() {
     UserEntity seller = TestDataUtil.getUser("john2.doe@example.com");
     UserEntity bidOwner = TestDataUtil.getUser("rich.kid@example.com");
+    var bidOwnerWallet = TestDataUtil.getWallet(bidOwner);
     var category = TestDataUtil.getCategory("paintings");
     var item = TestDataUtil.getItem("Still life Raphael", category, seller);
     var auction = TestDataUtil.getAuctionEntity(item, clock);
-    BigDecimal bidPrice = BigDecimal.TEN;
-    var bid = TestDataUtil.getBid(auction, bidOwner, bidPrice);
+    var bid = TestDataUtil.getBid(auction, bidOwner, BigDecimal.TEN);
+    var bidHoldBalance = TestDataUtil.getBidHoldBalance(bidOwnerWallet, auction, bid);
 
     session.persist(seller);
     session.persist(bidOwner);
+    session.persist(bidOwnerWallet);
     session.persist(category);
     session.persist(item);
     session.persist(auction);
     session.persist(bid);
+    session.persist(bidHoldBalance);
     session.flush();
     session.clear();
-    var savedBid = session.get(BidEntity.class, bid.getId());
+    var savedBidHoldBalance = session.get(BidHoldBalanceEntity.class, bidHoldBalance.getId());
 
-    assertThat(savedBid).isNotNull();
+    assertThat(savedBidHoldBalance).isNotNull();
   }
 
   @Test
-  void findById_bidNotExist_notFound() {
-    var userId = UUID.fromString("11059f0e-669f-43e6-9087-21f9a114deb5");
+  void findById_bidHoldBalanceNotExist_notFound() {
+    var bidHoldBalanceId = UUID.fromString("11059f0e-669f-43e6-9087-21f9a114deb5");
 
-    var foundBid = session.get(BidEntity.class, userId);
+    var foundBidHoldBalance = session.get(BidHoldBalanceEntity.class, bidHoldBalanceId);
 
-    assertThat(foundBid).isNull();
+    assertThat(foundBidHoldBalance).isNull();
   }
 
   @Test
-  void findById_multipleBids_foundAll() {
+  void findById_multipleBidHoldBalances_foundAll() {
     UserEntity firstSeller = TestDataUtil.getUser("john.doe@example.com");
     UserEntity secondSeller = TestDataUtil.getUser("john2.doe@example.com");
     UserEntity firstBidOwner = TestDataUtil.getUser("rich.kid@example.com");
     UserEntity secondBidOwner = TestDataUtil.getUser("rich2.kid@example.com");
+    var firstBidOwnerWallet = TestDataUtil.getWallet(firstBidOwner);
+    var secondBidOwnerWallet = TestDataUtil.getWallet(secondBidOwner);
     var firstCategory = TestDataUtil.getCategory("paintings");
     var secondCategory = TestDataUtil.getCategory("postcards");
     var firstItem = TestDataUtil.getItem("Still life Raphael", firstCategory, firstSeller);
     var secondItem = TestDataUtil.getItem("Postcard New Year", secondCategory, secondSeller);
     var firstAuction = TestDataUtil.getAuctionEntity(firstItem, clock);
     var secondAuction = TestDataUtil.getAuctionEntity(secondItem, clock);
-    BigDecimal bidPrice = BigDecimal.TEN;
-    var firstBid = TestDataUtil.getBid(firstAuction, firstBidOwner, bidPrice);
-    var secondBid = TestDataUtil.getBid(secondAuction, secondBidOwner, bidPrice);
+    var firstBid = TestDataUtil.getBid(firstAuction, firstBidOwner, BigDecimal.TEN);
+    var secondBid = TestDataUtil.getBid(secondAuction, secondBidOwner, BigDecimal.TEN);
+    var firstBidHoldBalance = TestDataUtil.getBidHoldBalance(firstBidOwnerWallet, firstAuction,
+        firstBid);
+    var secondBidHoldBalance = TestDataUtil.getBidHoldBalance(secondBidOwnerWallet, secondAuction,
+        secondBid);
     session.persist(firstSeller);
     session.persist(secondSeller);
     session.persist(firstBidOwner);
     session.persist(secondBidOwner);
+    session.persist(firstBidOwnerWallet);
+    session.persist(secondBidOwnerWallet);
     session.persist(firstCategory);
     session.persist(secondCategory);
     session.persist(firstItem);
@@ -74,71 +87,80 @@ class BidEntityIT extends IntegrationBaseTest {
     session.persist(secondAuction);
     session.persist(firstBid);
     session.persist(secondBid);
+    session.persist(firstBidHoldBalance);
+    session.persist(secondBidHoldBalance);
     session.flush();
     session.clear();
 
-    var firstSavedBid = session.get(BidEntity.class, firstBid.getId());
-    var secondSavedBid = session.get(BidEntity.class, secondBid.getId());
+    var firstSavedBidHoldBalance = session.get(BidHoldBalanceEntity.class,
+        firstBidHoldBalance.getId());
+    var secondSavedBidHoldBalance = session.get(BidHoldBalanceEntity.class,
+        secondBidHoldBalance.getId());
 
-    assertThat(List.of(firstSavedBid, secondSavedBid))
+    assertThat(List.of(firstSavedBidHoldBalance, secondSavedBidHoldBalance))
         .allMatch(Objects::nonNull);
   }
 
   @Test
-  void remove_bidExist_removed() {
+  void remove_bidHoldBalanceExist_removed() {
     UserEntity seller = TestDataUtil.getUser("john2.doe@example.com");
     UserEntity bidOwner = TestDataUtil.getUser("rich.kid@example.com");
+    var bidOwnerWallet = TestDataUtil.getWallet(bidOwner);
     var category = TestDataUtil.getCategory("paintings");
     var item = TestDataUtil.getItem("Still life Raphael", category, seller);
     var auction = TestDataUtil.getAuctionEntity(item, clock);
-    BigDecimal bidPrice = BigDecimal.TEN;
-    var bid = TestDataUtil.getBid(auction, bidOwner, bidPrice);
+    var bid = TestDataUtil.getBid(auction, bidOwner, BigDecimal.TEN);
+    var bidHoldBalance = TestDataUtil.getBidHoldBalance(bidOwnerWallet, auction, bid);
     session.persist(seller);
     session.persist(bidOwner);
+    session.persist(bidOwnerWallet);
     session.persist(category);
     session.persist(item);
     session.persist(auction);
     session.persist(bid);
+    session.persist(bidHoldBalance);
     session.flush();
     session.clear();
-    var savedBid = session.get(BidEntity.class, bid.getId());
+    var savedBidHoldBalance = session.get(BidHoldBalanceEntity.class, bidHoldBalance.getId());
 
-    session.remove(savedBid);
+    session.remove(savedBidHoldBalance);
     session.flush();
     session.clear();
-    var foundBid = session.get(BidEntity.class, savedBid.getId());
+    var foundBidHoldBalance = session.get(BidHoldBalanceEntity.class, savedBidHoldBalance.getId());
 
-    assertThat(foundBid).isNull();
+    assertThat(foundBidHoldBalance).isNull();
   }
 
   @Test
-  void update_updatedBidStatus_updated() {
+  void update_updatedBidHoldBalanceStatus_updated() {
     UserEntity seller = TestDataUtil.getUser("john2.doe@example.com");
     UserEntity bidOwner = TestDataUtil.getUser("rich.kid@example.com");
+    var bidOwnerWallet = TestDataUtil.getWallet(bidOwner);
     var category = TestDataUtil.getCategory("paintings");
     var item = TestDataUtil.getItem("Still life Raphael", category, seller);
     var auction = TestDataUtil.getAuctionEntity(item, clock);
-    BigDecimal bidPrice = BigDecimal.TEN;
-    var bid = TestDataUtil.getBid(auction, bidOwner, bidPrice);
-    BidStatus updatedBidStatus = BidStatus.WON;
+    var bid = TestDataUtil.getBid(auction, bidOwner, BigDecimal.TEN);
+    var bidHoldBalance = TestDataUtil.getBidHoldBalance(bidOwnerWallet, auction, bid);
     session.persist(seller);
     session.persist(bidOwner);
+    session.persist(bidOwnerWallet);
     session.persist(category);
     session.persist(item);
     session.persist(auction);
     session.persist(bid);
+    session.persist(bidHoldBalance);
     session.flush();
     session.clear();
-    var savedBid = session.get(BidEntity.class, bid.getId());
+    var savedBidHoldBalance = session.get(BidHoldBalanceEntity.class, bidHoldBalance.getId());
 
-    savedBid.setStatus(updatedBidStatus);
-    session.merge(savedBid);
+    savedBidHoldBalance.setStatus(BidHoldBalanceStatus.CONFIRMED);
+    session.merge(savedBidHoldBalance);
     session.flush();
     session.clear();
-    var updatedAuction = session.get(BidEntity.class, savedBid.getId());
+    var updatedBidHoldBalance = session.get(BidHoldBalanceEntity.class, bidHoldBalance.getId());
 
-    assertThat(updatedAuction)
+    assertThat(updatedBidHoldBalance)
         .isNotNull()
-        .isEqualTo(savedBid);
+        .isEqualTo(savedBidHoldBalance);
   }
 }

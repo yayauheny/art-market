@@ -10,6 +10,7 @@ import by.yayauheny.entity.PaymentEntity;
 import by.yayauheny.entity.UserEntity;
 import by.yayauheny.entity.WalletEntity;
 import by.yayauheny.enums.AuctionStatus;
+import by.yayauheny.enums.BidHoldBalanceStatus;
 import by.yayauheny.enums.BidStatus;
 import by.yayauheny.enums.ItemConditionType;
 import by.yayauheny.enums.ItemTransactionStatus;
@@ -136,19 +137,16 @@ public final class TestDataUtil {
       AuctionEntity auction,
       BidEntity bid
   ) {
-//        wallet
-//    auction
-//        bid
-//    amount
-//        currency
-//    status
-
     var bidHoldBalance = BidHoldBalanceEntity.builder()
+        .wallet(wallet)
+        .auction(auction)
+        .bid(bid)
         .amount(bid.getPrice())
+        .currency(auction.getItem().getCurrency())
+        .status(BidHoldBalanceStatus.PENDING)
         .build();
-    wallet.addPayment(payment);
-    order.addPayment(payment);
+    wallet.addBidHoldBalance(bidHoldBalance);
 
-    return payment;
+    return bidHoldBalance;
   }
 }

@@ -62,15 +62,15 @@ public class WalletEntity {
 
   @OneToMany(mappedBy = "wallet")
   @Builder.Default
-  private List<BidHoldBalanceEntity> bidHolds = new ArrayList<>();
+  private List<BidHoldBalanceEntity> bidHoldBalances = new ArrayList<>();
 
   public void addPayment(PaymentEntity payment) {
     payments.add(payment);
     payment.setWallet(this);
   }
 
-  public void addBidHold(BidHoldBalanceEntity bidHoldBalance) {
-    bidHolds.add(bidHoldBalance);
+  public void addBidHoldBalance(BidHoldBalanceEntity bidHoldBalance) {
+    bidHoldBalances.add(bidHoldBalance);
     bidHoldBalance.setWallet(this);
   }
 }
