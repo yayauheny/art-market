@@ -1,13 +1,11 @@
 package by.yayauheny.util;
 
+import lombok.experimental.UtilityClass;
 import org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy;
 import org.hibernate.cfg.Configuration;
 
-public final class HibernateTestUtil {
-
-  private HibernateTestUtil() {
-    throw new IllegalStateException("Cannot create util class");
-  }
+@UtilityClass
+public class HibernateTestUtil {
 
   public static Configuration buildConfiguration() {
     Configuration configuration = new Configuration();

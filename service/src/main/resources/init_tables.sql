@@ -8,8 +8,8 @@ CREATE TABLE IF NOT EXISTS users
     role       VARCHAR(32)  NOT NULL,
     address    VARCHAR(255),
     birth_date DATE         NOT NULL,
-    created_at TIMESTAMP    DEFAULT NOW(),
-    updated_at TIMESTAMP    DEFAULT NOW()
+    created_at TIMESTAMP    NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP    NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS wallet
