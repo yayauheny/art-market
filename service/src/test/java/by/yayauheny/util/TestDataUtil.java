@@ -23,12 +23,10 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import lombok.experimental.UtilityClass;
 
-public final class TestDataUtil {
-
-  private TestDataUtil() {
-    throw new IllegalStateException("Cannot create util class");
-  }
+@UtilityClass
+public class TestDataUtil {
 
   public static UserEntity getUser(String email) {
     return UserEntity.builder()
