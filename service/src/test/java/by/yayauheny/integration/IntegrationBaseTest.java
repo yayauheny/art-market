@@ -21,7 +21,9 @@ public abstract class IntegrationBaseTest {
   protected static final Clock clock = Clock.fixed(Instant.now(), ZoneOffset.UTC);
   protected static final PostgreSQLContainer<?> postgreSqlContainer;
   protected static final SessionFactory sessionFactory;
-  protected Session session;
+  protected final Session session = (Session) Proxy.newProxyInstance(
+      SessionFactory.class.getClassLoader(), new Class[]{Session.class},
+      (proxy, method, args1) -> method.invoke(sessionFactory.getCurrentSession(), args1));
   protected Transaction transaction;
 
   static {
@@ -46,18 +48,11 @@ public abstract class IntegrationBaseTest {
 
   @BeforeEach
   public void openSessionAndTransaction() {
-    session = (Session) Proxy.newProxyInstance(SessionFactory.class.getClassLoader(), new Class[]{Session.class},
-        (proxy, method, args1) -> method.invoke(sessionFactory.getCurrentSession(), args1));
     transaction = session.beginTransaction();
   }
 
   @AfterEach
   public void closeSessionAndTransaction() {
-    if (transaction != null && transaction.isActive()) {
-      transaction.rollback();
-    }
-    if (session != null && session.isOpen()) {
-      session.close();
-    }
+    transaction.rollback();
   }
 }

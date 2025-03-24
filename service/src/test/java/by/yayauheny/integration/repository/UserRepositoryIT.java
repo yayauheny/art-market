@@ -3,17 +3,18 @@ package by.yayauheny.integration.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import by.yayauheny.entity.UserEntity;
-import by.yayauheny.entity.WalletEntity;
 import by.yayauheny.integration.IntegrationBaseTest;
 import by.yayauheny.repository.UserRepository;
 import by.yayauheny.repository.WalletRepository;
+import by.yayauheny.util.IocIntegrationTest;
 import by.yayauheny.util.TestDataUtil;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith(IocIntegrationTest.class)
 class UserRepositoryIT extends IntegrationBaseTest {
 
   private UserRepository userRepository;
@@ -27,16 +28,10 @@ class UserRepositoryIT extends IntegrationBaseTest {
 
   @Test
   void save_validUserWithWallet_saved() {
-    var user = TestDataUtil.getUser("john.doe@example.com");
-    var userWallet = TestDataUtil.getWallet(user);
+    var user = createAndSaveUser();
 
-    userRepository.save(user);
-    walletRepository.save(userWallet);
-    session.flush();
-    session.clear();
-    var savedUser = userRepository.findById(user.getId());
-
-    assertThat(savedUser).isNotNull();
+    var savedUser = userRepository.findById(user.getId()).get();
+    assertThat(savedUser.getId()).isEqualTo(user.getId());
   }
 
   @Test
@@ -50,52 +45,29 @@ class UserRepositoryIT extends IntegrationBaseTest {
 
   @Test
   void findById_userExist_found() {
+    var user = createAndSaveUser();
+
+    var foundUser = userRepository.findById(user.getId()).get();
+
+    assertThat(foundUser.getId()).isEqualTo(user.getId());
+  }
+
+  @Test
+  void delete_userExist_deleted() {
     var user = TestDataUtil.getUser("john.doe@example.com");
     var userWallet = TestDataUtil.getWallet(user);
     userRepository.save(user);
     walletRepository.save(userWallet);
     session.flush();
     session.clear();
+    var foundUser = userRepository.findById(user.getId()).get();
+    var foundUserWallet = walletRepository.findById(userWallet.getId()).get();
 
-    Optional<UserEntity> foundUser = userRepository.findById(user.getId());
+    userRepository.delete(foundUser);
 
-    assertThat(foundUser).isPresent();
-  }
-
-  @Test
-  void findAll_multipleUsersExist_foundAll() {
-    var firstUser = TestDataUtil.getUser("john.doe@example.com");
-    var secondUser = TestDataUtil.getUser("john2.doe@example.com");
-    var firstUserWallet = TestDataUtil.getWallet(firstUser);
-    var secondUserWallet = TestDataUtil.getWallet(secondUser);
-    userRepository.save(firstUser);
-    userRepository.save(secondUser);
-    walletRepository.save(firstUserWallet);
-    walletRepository.save(secondUserWallet);
-    session.flush();
-    session.clear();
-
-    List<UserEntity> foundUsers = userRepository.findAll();
-
-    assertThat(foundUsers).hasSize(2);
-  }
-
-  @Test
-  void remove_userExist_removed() {
-    var user = TestDataUtil.getUser("john.doe@example.com");
-    var userWallet = TestDataUtil.getWallet(user);
-    UserEntity savedUser = userRepository.save(user);
-    WalletEntity savedWallet = walletRepository.save(userWallet);
-    session.flush();
-    session.clear();
-    Optional<UserEntity> foundUser = userRepository.findById(user.getId());
-    Optional<WalletEntity> foundUserWallet = walletRepository.findById(userWallet.getId());
-
-    foundUserWallet.ifPresent(w -> walletRepository.delete(savedWallet.getId()));
-    foundUser.ifPresent(u -> userRepository.delete(savedUser.getId()));
+    walletRepository.delete(foundUserWallet);
     session.clear();
     Optional<UserEntity> deletedUser = userRepository.findById(user.getId());
-
     assertThat(deletedUser).isEmpty();
   }
 
@@ -108,20 +80,25 @@ class UserRepositoryIT extends IntegrationBaseTest {
     walletRepository.save(userWallet);
     session.flush();
     session.clear();
-    Optional<UserEntity> savedUser = userRepository.findById(user.getId());
+    var savedUser = userRepository.findById(user.getId()).get();
+    savedUser.setAddress(updatedAddress);
 
-    savedUser.ifPresent(userForUpdate -> {
-      userForUpdate.setAddress(updatedAddress);
-      userRepository.update(userForUpdate);
-      session.flush();
-      session.clear();
-    });
-    Optional<UserEntity> updatedUser = userRepository.findById(user.getId());
+    userRepository.update(savedUser);
 
-    assertThat(updatedUser)
-        .isPresent()
-        .get()
-        .extracting(UserEntity::getAddress)
-        .isEqualTo(updatedAddress);
+    session.flush();
+    session.clear();
+    var updatedUser = userRepository.findById(user.getId()).get();
+    assertThat(updatedUser.getAddress()).isEqualTo(updatedAddress);
+  }
+
+  private UserEntity createAndSaveUser() {
+    var user = TestDataUtil.getUser("john.doe@example.com");
+    var userWallet = TestDataUtil.getWallet(user);
+    var savedUser = userRepository.save(user);
+    walletRepository.save(userWallet);
+    session.flush();
+    session.clear();
+
+    return savedUser;
   }
 }

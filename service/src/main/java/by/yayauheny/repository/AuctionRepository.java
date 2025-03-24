@@ -1,16 +1,16 @@
 package by.yayauheny.repository;
 
-import by.yayauheny.entity.WalletEntity;
+import by.yayauheny.entity.AuctionEntity;
 import jakarta.persistence.EntityManager;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class WalletRepository extends RepositoryBase<UUID, WalletEntity> {
+public class AuctionRepository extends RepositoryBase<UUID, AuctionEntity> {
 
   @Autowired
-  public WalletRepository(EntityManager entityManager) {
-    super(WalletEntity.class, entityManager);
+  public AuctionRepository(EntityManager entityManager) {
+    super(AuctionEntity.class, entityManager);
   }
 }
