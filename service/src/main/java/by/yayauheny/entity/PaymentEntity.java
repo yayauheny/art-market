@@ -17,12 +17,14 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
+@Builder(toBuilder = true)
 @EqualsAndHashCode(exclude = {"wallet", "order"})
 @ToString(exclude = {"wallet", "order"})
 @NoArgsConstructor

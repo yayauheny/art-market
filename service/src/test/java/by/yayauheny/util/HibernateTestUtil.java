@@ -1,13 +1,11 @@
 package by.yayauheny.util;
 
-import org.hibernate.SessionFactory;
 import org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy;
-import org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl;
 import org.hibernate.cfg.Configuration;
 
-public final class HibernateUtil {
+public final class HibernateTestUtil {
 
-  private HibernateUtil() {
+  private HibernateTestUtil() {
     throw new IllegalStateException("Cannot create util class");
   }
 

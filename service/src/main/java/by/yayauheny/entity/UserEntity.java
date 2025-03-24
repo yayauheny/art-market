@@ -12,15 +12,18 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
+@Builder(toBuilder = true)
 @EqualsAndHashCode(of = "email")
 @ToString(exclude = {"wallet", "itemsForSale", "bids", "orders"})
 @NoArgsConstructor
@@ -62,11 +65,34 @@ public class UserEntity {
   private WalletEntity wallet;
 
   @OneToMany(mappedBy = "seller")
-  private List<ItemEntity> itemsForSale;
+  @Builder.Default
+  private List<ItemEntity> itemsForSale = new ArrayList<>();
 
   @OneToMany(mappedBy = "user")
-  private List<BidEntity> bids;
+  @Builder.Default
+  private List<BidEntity> bids = new ArrayList<>();
 
   @OneToMany(mappedBy = "user")
-  private List<OrderEntity> orders;
+  @Builder.Default
+  private List<OrderEntity> orders = new ArrayList<>();
+
+  public void setWallet(WalletEntity wallet) {
+    this.wallet = wallet;
+    wallet.setOwner(this);
+  }
+
+  public void addItemForSale(ItemEntity item) {
+    itemsForSale.add(item);
+    item.setSeller(this);
+  }
+
+  public void addBid(BidEntity bid) {
+    bids.add(bid);
+    bid.setUser(this);
+  }
+
+  public void addOrder(OrderEntity order) {
+    orders.add(order);
+    order.setUser(this);
+  }
 }
