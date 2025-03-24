@@ -3,6 +3,7 @@ package by.yayauheny.integration;
 import static java.time.temporal.ChronoUnit.SECONDS;
 
 import by.yayauheny.util.HibernateTestUtil;
+import java.lang.reflect.Proxy;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
@@ -45,7 +46,8 @@ public abstract class IntegrationBaseTest {
 
   @BeforeEach
   public void openSessionAndTransaction() {
-    session = getSessionFactory().openSession();
+    session = (Session) Proxy.newProxyInstance(SessionFactory.class.getClassLoader(), new Class[]{Session.class},
+        (proxy, method, args1) -> method.invoke(sessionFactory.getCurrentSession(), args1));
     transaction = session.beginTransaction();
   }
 
@@ -57,9 +59,5 @@ public abstract class IntegrationBaseTest {
     if (session != null && session.isOpen()) {
       session.close();
     }
-  }
-
-  protected static SessionFactory getSessionFactory() {
-    return sessionFactory;
   }
 }
