@@ -26,11 +26,11 @@
     <testcontainers.version>1.20.5</testcontainers.version>
     <querydsl.version>5.0.0</querydsl.version>
     <jakarta.version>3.1.0</jakarta.version>
+    <maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
+    <spring.version>6.2.4</spring.version>
   </properties>
 
-
   <dependencies>
-
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
@@ -74,5 +74,4 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-
 </project>
