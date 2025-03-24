@@ -19,23 +19,17 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
-import org.junit.jupiter.api.BeforeEach;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 @ExtendWith(IocIntegrationTest.class)
+@RequiredArgsConstructor
 class ItemRepositoryIT extends IntegrationBaseTest {
 
-  private UserRepository userRepository;
-  private ItemRepository itemRepository;
-  private CategoryRepository categoryRepository;
-
-  @BeforeEach
-  void initDependencies() {
-    userRepository = new UserRepository(session);
-    itemRepository = new ItemRepository(session);
-    categoryRepository = new CategoryRepository(session);
-  }
+  private final UserRepository userRepository;
+  private final ItemRepository itemRepository;
+  private final CategoryRepository categoryRepository;
 
   @Test
   void save_validItem_saved() {

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class UserRepository extends RepositoryBase<UUID, UserEntity> {
 
-  @Autowired
   public UserRepository(EntityManager entityManager) {
     super(UserEntity.class, entityManager);
   }

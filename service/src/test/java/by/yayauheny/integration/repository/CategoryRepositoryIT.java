@@ -8,19 +8,15 @@ import by.yayauheny.repository.CategoryRepository;
 import by.yayauheny.util.IocIntegrationTest;
 import by.yayauheny.util.TestDataUtil;
 import java.util.UUID;
-import org.junit.jupiter.api.BeforeEach;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 @ExtendWith(IocIntegrationTest.class)
+@RequiredArgsConstructor
 class CategoryRepositoryIT extends IntegrationBaseTest {
 
-  private CategoryRepository categoryRepository;
-
-  @BeforeEach
-  void initDependencies() {
-    categoryRepository = new CategoryRepository(session);
-  }
+  private final CategoryRepository categoryRepository;
 
   @Test
   void save_validCategory_saved() {

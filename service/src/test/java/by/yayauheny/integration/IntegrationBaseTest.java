@@ -1,58 +1,26 @@
 package by.yayauheny.integration;
 
-import static java.time.temporal.ChronoUnit.SECONDS;
-
-import by.yayauheny.util.HibernateTestUtil;
-import java.lang.reflect.Proxy;
+import by.yayauheny.integration.config.ApplicationTestConfig;
 import java.time.Clock;
-import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.testcontainers.containers.PostgreSQLContainer;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 public abstract class IntegrationBaseTest {
 
   protected static final Clock clock = Clock.fixed(Instant.now(), ZoneOffset.UTC);
-  protected static final PostgreSQLContainer<?> postgreSqlContainer;
-  protected static final SessionFactory sessionFactory;
-  protected final Session session = (Session) Proxy.newProxyInstance(
-      SessionFactory.class.getClassLoader(), new Class[]{Session.class},
-      (proxy, method, args1) -> method.invoke(sessionFactory.getCurrentSession(), args1));
-  protected Transaction transaction;
+  protected static AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
+  protected Session session;
 
   static {
-    postgreSqlContainer = configurePostgreSQLContainer();
-    postgreSqlContainer.start();
-    sessionFactory = getDbConfiguration().buildSessionFactory();
-  }
-
-  private static PostgreSQLContainer<?> configurePostgreSQLContainer() {
-    return new PostgreSQLContainer<>("postgres:17")
-        .withInitScript("init_tables.sql")
-        .withStartupTimeout(Duration.of(30, SECONDS));
-  }
-
-  private static Configuration getDbConfiguration() {
-    Configuration configuration = HibernateTestUtil.buildConfiguration();
-    configuration.setProperty("hibernate.connection.url", postgreSqlContainer.getJdbcUrl());
-    configuration.setProperty("hibernate.connection.username", postgreSqlContainer.getUsername());
-    configuration.setProperty("hibernate.connection.password", postgreSqlContainer.getPassword());
-    return configuration.configure();
+    context.register(ApplicationTestConfig.class);
+    context.refresh();
   }
 
   @BeforeEach
-  public void openSessionAndTransaction() {
-    transaction = session.beginTransaction();
-  }
-
-  @AfterEach
-  public void closeSessionAndTransaction() {
-    transaction.rollback();
+  public void init() {
+    session = context.getBean(Session.class);
   }
 }

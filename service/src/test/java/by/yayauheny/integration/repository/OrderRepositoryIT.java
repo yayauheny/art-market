@@ -14,25 +14,18 @@ import by.yayauheny.util.IocIntegrationTest;
 import by.yayauheny.util.TestDataUtil;
 import java.time.Clock;
 import java.util.UUID;
-import org.junit.jupiter.api.BeforeEach;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 @ExtendWith(IocIntegrationTest.class)
+@RequiredArgsConstructor
 class OrderRepositoryIT extends IntegrationBaseTest {
 
-  private UserRepository userRepository;
-  private ItemRepository itemRepository;
-  private CategoryRepository categoryRepository;
-  private OrderRepository orderRepository;
-
-  @BeforeEach
-  void initDependencies() {
-    userRepository = new UserRepository(session);
-    itemRepository = new ItemRepository(session);
-    categoryRepository = new CategoryRepository(session);
-    orderRepository = new OrderRepository(session);
-  }
+  private final UserRepository userRepository;
+  private final ItemRepository itemRepository;
+  private final CategoryRepository categoryRepository;
+  private final OrderRepository orderRepository;
 
   @Test
   void save_validOrder_saved() {

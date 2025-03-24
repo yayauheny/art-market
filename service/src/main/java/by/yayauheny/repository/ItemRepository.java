@@ -23,7 +23,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class ItemRepository extends RepositoryBase<UUID, ItemEntity> {
 
-  @Autowired
   public ItemRepository(EntityManager entityManager) {
     super(ItemEntity.class, entityManager);
   }
