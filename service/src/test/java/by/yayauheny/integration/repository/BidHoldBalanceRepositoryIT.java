@@ -17,32 +17,21 @@ import by.yayauheny.util.IocIntegrationTest;
 import by.yayauheny.util.TestDataUtil;
 import java.math.BigDecimal;
 import java.util.UUID;
-import org.junit.jupiter.api.BeforeEach;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 @ExtendWith(IocIntegrationTest.class)
+@RequiredArgsConstructor
 class BidHoldBalanceRepositoryIT extends IntegrationBaseTest {
 
-  private UserRepository userRepository;
-  private WalletRepository walletRepository;
-  private ItemRepository itemRepository;
-  private CategoryRepository categoryRepository;
-  private AuctionRepository auctionRepository;
-  private BidRepository bidRepository;
-  private BidHoldBalanceRepository bidHoldBalanceRepository;
-
-  @BeforeEach
-  void initDependencies() {
-    userRepository = new UserRepository(session);
-    walletRepository = new WalletRepository(session);
-    itemRepository = new ItemRepository(session);
-    categoryRepository = new CategoryRepository(session);
-    categoryRepository = new CategoryRepository(session);
-    auctionRepository = new AuctionRepository(session);
-    bidRepository = new BidRepository(session);
-    bidHoldBalanceRepository = new BidHoldBalanceRepository(session);
-  }
+  private final UserRepository userRepository;
+  private final WalletRepository walletRepository;
+  private final ItemRepository itemRepository;
+  private final CategoryRepository categoryRepository;
+  private final AuctionRepository auctionRepository;
+  private final BidRepository bidRepository;
+  private final BidHoldBalanceRepository bidHoldBalanceRepository;
 
   @Test
   void save_validBidHoldBalance_saved() {

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class PaymentRepository extends RepositoryBase<UUID, PaymentEntity> {
 
-  @Autowired
   public PaymentRepository(EntityManager entityManager) {
     super(PaymentEntity.class, entityManager);
   }
