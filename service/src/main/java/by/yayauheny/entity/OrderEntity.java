@@ -1,7 +1,6 @@
 package by.yayauheny.entity;
 
 import by.yayauheny.enums.OrderStatus;
-import by.yayauheny.enums.PaymentType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -15,7 +14,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -64,7 +62,7 @@ public class OrderEntity {
   @Builder.Default
   private List<PaymentEntity> payments = new ArrayList<>();
 
-  public void addPayment(PaymentEntity payment){
+  public void addPayment(PaymentEntity payment) {
     payments.add(payment);
     payment.setOrder(this);
   }

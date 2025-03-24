@@ -23,22 +23,13 @@
     <junit.bom.version>5.11.4</junit.bom.version>
     <postgres.driver.version>42.3.3</postgres.driver.version>
     <mockito.junit.version>5.15.2</mockito.junit.version>
+    <testcontainers.version>1.20.5</testcontainers.version>
+    <querydsl.version>5.0.0</querydsl.version>
+    <jakarta.version>3.1.0</jakarta.version>
   </properties>
 
 
   <dependencies>
-    <dependency>
-      <groupId>org.hibernate.orm</groupId>
-      <artifactId>hibernate-core</artifactId>
-      <version>${hibernate.version}</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.postgresql</groupId>
-      <artifactId>postgresql</artifactId>
-      <version>${postgres.driver.version}</version>
-      <scope>runtime</scope>
-    </dependency>
 
     <dependency>
       <groupId>org.projectlombok</groupId>
