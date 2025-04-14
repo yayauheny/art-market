@@ -4,17 +4,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import by.yayauheny.entity.UserEntity;
 import by.yayauheny.integration.IntegrationBaseTest;
+import by.yayauheny.integration.annotation.IT;
 import by.yayauheny.repository.UserRepository;
 import by.yayauheny.repository.WalletRepository;
-import by.yayauheny.util.IocIntegrationTest;
 import by.yayauheny.util.TestDataUtil;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
-@ExtendWith(IocIntegrationTest.class)
+@IT
 @RequiredArgsConstructor
 class UserRepositoryIT extends IntegrationBaseTest {
 
@@ -53,15 +52,16 @@ class UserRepositoryIT extends IntegrationBaseTest {
     var userWallet = TestDataUtil.getWallet(user);
     userRepository.save(user);
     walletRepository.save(userWallet);
-    session.flush();
-    session.clear();
+    entityManager.flush();
+    entityManager.clear();
     var foundUser = userRepository.findById(user.getId()).get();
     var foundUserWallet = walletRepository.findById(userWallet.getId()).get();
 
+    walletRepository.delete(foundUserWallet);
     userRepository.delete(foundUser);
 
-    walletRepository.delete(foundUserWallet);
-    session.clear();
+    entityManager.flush();
+    entityManager.clear();
     Optional<UserEntity> deletedUser = userRepository.findById(user.getId());
     assertThat(deletedUser).isEmpty();
   }
@@ -73,15 +73,15 @@ class UserRepositoryIT extends IntegrationBaseTest {
     var updatedAddress = "updated address";
     userRepository.save(user);
     walletRepository.save(userWallet);
-    session.flush();
-    session.clear();
+    entityManager.flush();
+    entityManager.clear();
     var savedUser = userRepository.findById(user.getId()).get();
     savedUser.setAddress(updatedAddress);
 
-    userRepository.update(savedUser);
+    userRepository.save(savedUser);
 
-    session.flush();
-    session.clear();
+    entityManager.flush();
+    entityManager.clear();
     var updatedUser = userRepository.findById(user.getId()).get();
     assertThat(updatedUser.getAddress()).isEqualTo(updatedAddress);
   }
@@ -91,8 +91,8 @@ class UserRepositoryIT extends IntegrationBaseTest {
     var userWallet = TestDataUtil.getWallet(user);
     var savedUser = userRepository.save(user);
     walletRepository.save(userWallet);
-    session.flush();
-    session.clear();
+    entityManager.flush();
+    entityManager.clear();
 
     return savedUser;
   }

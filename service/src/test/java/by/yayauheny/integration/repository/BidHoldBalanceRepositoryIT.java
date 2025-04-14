@@ -6,6 +6,7 @@ import by.yayauheny.entity.BidHoldBalanceEntity;
 import by.yayauheny.entity.UserEntity;
 import by.yayauheny.enums.BidHoldBalanceStatus;
 import by.yayauheny.integration.IntegrationBaseTest;
+import by.yayauheny.integration.annotation.IT;
 import by.yayauheny.repository.AuctionRepository;
 import by.yayauheny.repository.BidHoldBalanceRepository;
 import by.yayauheny.repository.BidRepository;
@@ -13,15 +14,13 @@ import by.yayauheny.repository.CategoryRepository;
 import by.yayauheny.repository.ItemRepository;
 import by.yayauheny.repository.UserRepository;
 import by.yayauheny.repository.WalletRepository;
-import by.yayauheny.util.IocIntegrationTest;
 import by.yayauheny.util.TestDataUtil;
 import java.math.BigDecimal;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
-@ExtendWith(IocIntegrationTest.class)
+@IT
 @RequiredArgsConstructor
 class BidHoldBalanceRepositoryIT extends IntegrationBaseTest {
 
@@ -47,7 +46,7 @@ class BidHoldBalanceRepositoryIT extends IntegrationBaseTest {
 
     var foundBidHoldBalance = bidHoldBalanceRepository.findById(bidHoldBalanceId);
 
-    assertThat(foundBidHoldBalance).isNull();
+    assertThat(foundBidHoldBalance).isEmpty();
   }
 
   @Test
@@ -66,8 +65,8 @@ class BidHoldBalanceRepositoryIT extends IntegrationBaseTest {
 
     bidHoldBalanceRepository.delete(savedBidHoldBalance);
 
-    session.flush();
-    session.clear();
+    entityManager.flush();
+    entityManager.clear();
     var foundBidHoldBalance = bidHoldBalanceRepository.findById(savedBidHoldBalance.getId());
     assertThat(foundBidHoldBalance).isEmpty();
   }
@@ -79,10 +78,10 @@ class BidHoldBalanceRepositoryIT extends IntegrationBaseTest {
     BidHoldBalanceStatus updatedStatus = BidHoldBalanceStatus.CONFIRMED;
     savedBidHoldBalance.setStatus(updatedStatus);
 
-    bidHoldBalanceRepository.update(savedBidHoldBalance);
+    bidHoldBalanceRepository.save(savedBidHoldBalance);
 
-    session.flush();
-    session.clear();
+    entityManager.flush();
+    entityManager.clear();
     var updatedBidHoldBalance = bidHoldBalanceRepository.findById(bidHoldBalance.getId()).get();
     assertThat(updatedBidHoldBalance.getStatus()).isEqualTo(updatedStatus);
   }
@@ -104,8 +103,8 @@ class BidHoldBalanceRepositoryIT extends IntegrationBaseTest {
     auctionRepository.save(auction);
     bidRepository.save(bid);
     var savedBidHoldBalance = bidHoldBalanceRepository.save(bidHoldBalance);
-    session.flush();
-    session.clear();
+    entityManager.flush();
+    entityManager.clear();
 
     return savedBidHoldBalance;
   }

@@ -1,15 +1,9 @@
 package by.yayauheny.repository;
 
 import by.yayauheny.entity.BidHoldBalanceEntity;
-import jakarta.persistence.EntityManager;
 import java.util.UUID;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-@Repository
-public class BidHoldBalanceRepository extends RepositoryBase<UUID, BidHoldBalanceEntity> {
+public interface BidHoldBalanceRepository extends JpaRepository<BidHoldBalanceEntity, UUID> {
 
-  public BidHoldBalanceRepository(EntityManager entityManager) {
-    super(BidHoldBalanceEntity.class, entityManager);
-  }
 }

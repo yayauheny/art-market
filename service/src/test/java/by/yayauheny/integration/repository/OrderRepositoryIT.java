@@ -6,19 +6,18 @@ import by.yayauheny.entity.OrderEntity;
 import by.yayauheny.entity.UserEntity;
 import by.yayauheny.enums.OrderStatus;
 import by.yayauheny.integration.IntegrationBaseTest;
+import by.yayauheny.integration.annotation.IT;
 import by.yayauheny.repository.CategoryRepository;
 import by.yayauheny.repository.ItemRepository;
 import by.yayauheny.repository.OrderRepository;
 import by.yayauheny.repository.UserRepository;
-import by.yayauheny.util.IocIntegrationTest;
 import by.yayauheny.util.TestDataUtil;
 import java.time.Clock;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
-@ExtendWith(IocIntegrationTest.class)
+@IT
 @RequiredArgsConstructor
 class OrderRepositoryIT extends IntegrationBaseTest {
 
@@ -60,7 +59,7 @@ class OrderRepositoryIT extends IntegrationBaseTest {
 
     orderRepository.delete(savedOrder);
 
-    session.clear();
+    entityManager.flush();
     var foundOrder = orderRepository.findById(savedOrder.getId());
     assertThat(foundOrder).isEmpty();
   }
@@ -72,10 +71,10 @@ class OrderRepositoryIT extends IntegrationBaseTest {
     OrderStatus updatedStatus = OrderStatus.CANCELED;
     savedOrder.setStatus(updatedStatus);
 
-    orderRepository.update(savedOrder);
+    orderRepository.save(savedOrder);
 
-    session.flush();
-    session.clear();
+    entityManager.flush();
+    entityManager.clear();
     var updatedOrder = orderRepository.findById(savedOrder.getId()).get();
     assertThat(updatedOrder.getStatus()).isEqualTo(updatedStatus);
   }
@@ -91,8 +90,8 @@ class OrderRepositoryIT extends IntegrationBaseTest {
     categoryRepository.save(category);
     itemRepository.save(item);
     var savedOrder = orderRepository.save(order);
-    session.flush();
-    session.clear();
+    entityManager.flush();
+    entityManager.clear();
 
     return savedOrder;
   }

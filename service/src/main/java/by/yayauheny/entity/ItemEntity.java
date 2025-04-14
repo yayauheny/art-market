@@ -27,6 +27,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.OptimisticLockType;
+import org.hibernate.annotations.OptimisticLocking;
 
 @Data
 @Builder(toBuilder = true)
@@ -35,6 +37,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "item")
+@OptimisticLocking(type = OptimisticLockType.VERSION)
 public class ItemEntity {
 
   @Id

@@ -61,7 +61,7 @@ public class UserEntity {
   @Column(nullable = false, insertable = false)
   private Instant updatedAt;
 
-  @OneToOne(mappedBy = "owner", optional = false)
+  @OneToOne(mappedBy = "owner")
   private WalletEntity wallet;
 
   @OneToMany(mappedBy = "seller")

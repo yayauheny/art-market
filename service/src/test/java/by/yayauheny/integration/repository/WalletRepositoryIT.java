@@ -4,17 +4,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import by.yayauheny.entity.WalletEntity;
 import by.yayauheny.integration.IntegrationBaseTest;
+import by.yayauheny.integration.annotation.IT;
 import by.yayauheny.repository.UserRepository;
 import by.yayauheny.repository.WalletRepository;
-import by.yayauheny.util.IocIntegrationTest;
 import by.yayauheny.util.TestDataUtil;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
-@ExtendWith(IocIntegrationTest.class)
+@IT
 @RequiredArgsConstructor
 class WalletRepositoryIT extends IntegrationBaseTest {
 
@@ -54,8 +52,8 @@ class WalletRepositoryIT extends IntegrationBaseTest {
 
     walletRepository.delete(savedWallet);
 
-    session.flush();
-    session.clear();
+    entityManager.flush();
+    entityManager.clear();
     var foundWallet = walletRepository.findById(savedWallet.getId());
     assertThat(foundWallet).isEmpty();
   }
@@ -67,10 +65,10 @@ class WalletRepositoryIT extends IntegrationBaseTest {
     var updatedCurrency = "PLN";
     savedWallet.setCurrency(updatedCurrency);
 
-    walletRepository.update(savedWallet);
+    walletRepository.save(savedWallet);
 
-    session.flush();
-    session.clear();
+    entityManager.flush();
+    entityManager.clear();
     var updatedWallet = walletRepository.findById(savedWallet.getId()).get();
     assertThat(updatedWallet.getCurrency()).isEqualTo(updatedCurrency);
   }
@@ -80,8 +78,8 @@ class WalletRepositoryIT extends IntegrationBaseTest {
     var userWallet = TestDataUtil.getWallet(user);
     userRepository.save(user);
     var savedWallet = walletRepository.save(userWallet);
-    session.flush();
-    session.clear();
+    entityManager.flush();
+    entityManager.clear();
 
     return savedWallet;
   }

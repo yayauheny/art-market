@@ -120,7 +120,7 @@ public class TestDataUtil {
     var payment = PaymentEntity.builder()
         .wallet(wallet)
         .order(order)
-        .amount(BigDecimal.TWO)
+        .amount(BigDecimal.ONE)
         .currency("USD")
         .status(PaymentStatus.PENDING)
         .build();

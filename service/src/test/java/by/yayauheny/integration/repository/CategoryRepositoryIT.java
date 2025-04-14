@@ -4,15 +4,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import by.yayauheny.entity.CategoryEntity;
 import by.yayauheny.integration.IntegrationBaseTest;
+import by.yayauheny.integration.annotation.IT;
 import by.yayauheny.repository.CategoryRepository;
-import by.yayauheny.util.IocIntegrationTest;
 import by.yayauheny.util.TestDataUtil;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
-@ExtendWith(IocIntegrationTest.class)
+@IT
 @RequiredArgsConstructor
 class CategoryRepositoryIT extends IntegrationBaseTest {
 
@@ -51,7 +50,8 @@ class CategoryRepositoryIT extends IntegrationBaseTest {
 
     categoryRepository.delete(savedCategory);
 
-    session.clear();
+    entityManager.flush();
+    entityManager.clear();
     var foundCategory = categoryRepository.findById(savedCategory.getId());
     assertThat(foundCategory).isEmpty();
   }
@@ -63,10 +63,10 @@ class CategoryRepositoryIT extends IntegrationBaseTest {
     var updatedDescription = "updated description";
     savedCategory.setDescription(updatedDescription);
 
-    categoryRepository.update(savedCategory);
+    categoryRepository.save(savedCategory);
 
-    session.flush();
-    session.clear();
+    entityManager.flush();
+    entityManager.clear();
     var updatedCategory = categoryRepository.findById(savedCategory.getId()).get();
     assertThat(updatedCategory.getDescription()).isEqualTo(updatedDescription);
   }
@@ -74,8 +74,8 @@ class CategoryRepositoryIT extends IntegrationBaseTest {
   private CategoryEntity createAndSaveCategory() {
     var category = TestDataUtil.getCategory("paintings");
     var savedCategory = categoryRepository.save(category);
-    session.flush();
-    session.clear();
+    entityManager.flush();
+    entityManager.clear();
 
     return savedCategory;
   }
