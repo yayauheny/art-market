@@ -9,21 +9,17 @@ import by.yayauheny.repository.WalletRepository;
 import by.yayauheny.util.IocIntegrationTest;
 import by.yayauheny.util.TestDataUtil;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 @ExtendWith(IocIntegrationTest.class)
+@RequiredArgsConstructor
 class WalletRepositoryIT extends IntegrationBaseTest {
 
-  private UserRepository userRepository;
-  private WalletRepository walletRepository;
-
-  @BeforeEach
-  void initDependencies() {
-    userRepository = new UserRepository(session);
-    walletRepository = new WalletRepository(session);
-  }
+  private final UserRepository userRepository;
+  private final WalletRepository walletRepository;
 
   @Test
   void save_validUserWallet_saved() {

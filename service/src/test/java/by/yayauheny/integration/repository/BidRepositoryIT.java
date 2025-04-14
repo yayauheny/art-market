@@ -15,27 +15,19 @@ import by.yayauheny.util.IocIntegrationTest;
 import by.yayauheny.util.TestDataUtil;
 import java.math.BigDecimal;
 import java.util.UUID;
-import org.junit.jupiter.api.BeforeEach;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 @ExtendWith(IocIntegrationTest.class)
+@RequiredArgsConstructor
 class BidRepositoryIT extends IntegrationBaseTest {
 
-  private UserRepository userRepository;
-  private ItemRepository itemRepository;
-  private CategoryRepository categoryRepository;
-  private AuctionRepository auctionRepository;
-  private BidRepository bidRepository;
-
-  @BeforeEach
-  void initDependencies() {
-    userRepository = new UserRepository(session);
-    itemRepository = new ItemRepository(session);
-    categoryRepository = new CategoryRepository(session);
-    auctionRepository = new AuctionRepository(session);
-    bidRepository = new BidRepository(session);
-  }
+  private final UserRepository userRepository;
+  private final ItemRepository itemRepository;
+  private final CategoryRepository categoryRepository;
+  private final AuctionRepository auctionRepository;
+  private final BidRepository bidRepository;
 
   @Test
   void save_validBid_saved() {

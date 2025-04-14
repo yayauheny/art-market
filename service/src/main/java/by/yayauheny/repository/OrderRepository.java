@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class OrderRepository extends RepositoryBase<UUID, OrderEntity> {
 
-  @Autowired
   public OrderRepository(EntityManager entityManager) {
     super(OrderEntity.class, entityManager);
   }

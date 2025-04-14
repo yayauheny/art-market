@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class BidHoldBalanceRepository extends RepositoryBase<UUID, BidHoldBalanceEntity> {
 
-  @Autowired
   public BidHoldBalanceRepository(EntityManager entityManager) {
     super(BidHoldBalanceEntity.class, entityManager);
   }

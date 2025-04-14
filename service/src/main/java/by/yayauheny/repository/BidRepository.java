@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class BidRepository extends RepositoryBase<UUID, BidEntity> {
 
-  @Autowired
   public BidRepository(EntityManager entityManager) {
     super(BidEntity.class, entityManager);
   }

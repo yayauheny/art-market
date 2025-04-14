@@ -1,35 +1,39 @@
 package by.yayauheny.util;
 
-import by.yayauheny.integration.config.TestDatabaseConfig;
-import java.lang.reflect.Field;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.stereotype.Component;
+import org.springframework.context.ApplicationContextAware;
 
-@Component
-public class IocIntegrationTest implements BeforeEachCallback {
+public class IocIntegrationTest implements BeforeEachCallback, ApplicationContextAware {
 
-  private final ApplicationContext applicationContext = new AnnotationConfigApplicationContext(
-      TestDatabaseConfig.class);
+  protected Session session;
+  protected Transaction transaction;
+  protected ApplicationContext context;
 
   @Override
   public void beforeEach(ExtensionContext context) {
     Object testInstance = context.getRequiredTestInstance();
-    injectDependencies(testInstance);
   }
 
-  private void injectDependencies(Object testInstance) {
-    Field[] fields = testInstance.getClass().getDeclaredFields();
-    for (Field field : fields) {
-      Object bean = applicationContext.getBean(field.getType());
-      field.setAccessible(true);
-      try {
-        field.set(testInstance, bean);
-      } catch (IllegalAccessException e) {
-        throw new RuntimeException("Failed to inject dependencies into " + field.getName(), e);
-      }
-    }
+  @BeforeEach
+  public void openSessionAndTransaction() {
+    transaction = session.beginTransaction();
+  }
+
+  @AfterEach
+  public void closeSessionAndTransaction() {
+    transaction.rollback();
+  }
+
+  @Override
+  public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    this.context = applicationContext;
+    session = applicationContext.getBean(Session.class);
   }
 }
