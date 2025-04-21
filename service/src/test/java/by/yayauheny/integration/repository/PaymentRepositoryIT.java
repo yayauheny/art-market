@@ -6,20 +6,19 @@ import by.yayauheny.entity.PaymentEntity;
 import by.yayauheny.entity.UserEntity;
 import by.yayauheny.enums.PaymentStatus;
 import by.yayauheny.integration.IntegrationBaseTest;
+import by.yayauheny.integration.annotation.IT;
 import by.yayauheny.repository.CategoryRepository;
 import by.yayauheny.repository.ItemRepository;
 import by.yayauheny.repository.OrderRepository;
 import by.yayauheny.repository.PaymentRepository;
 import by.yayauheny.repository.UserRepository;
 import by.yayauheny.repository.WalletRepository;
-import by.yayauheny.util.IocIntegrationTest;
 import by.yayauheny.util.TestDataUtil;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
-@ExtendWith(IocIntegrationTest.class)
+@IT
 @RequiredArgsConstructor
 class PaymentRepositoryIT extends IntegrationBaseTest {
 
@@ -63,7 +62,8 @@ class PaymentRepositoryIT extends IntegrationBaseTest {
 
     paymentRepository.delete(savedPayment);
 
-    session.clear();
+    entityManager.flush();
+    entityManager.clear();
     var foundPayment = paymentRepository.findById(savedPayment.getId());
     assertThat(foundPayment).isEmpty();
   }
@@ -75,10 +75,10 @@ class PaymentRepositoryIT extends IntegrationBaseTest {
     PaymentStatus updatedStatus = PaymentStatus.FAILED;
     savedPayment.setStatus(updatedStatus);
 
-    paymentRepository.update(savedPayment);
+    paymentRepository.save(savedPayment);
 
-    session.flush();
-    session.clear();
+    entityManager.flush();
+    entityManager.clear();
     var updatedPayment = paymentRepository.findById(savedPayment.getId()).get();
     assertThat(updatedPayment.getStatus()).isEqualTo(updatedStatus);
   }
@@ -100,8 +100,8 @@ class PaymentRepositoryIT extends IntegrationBaseTest {
     itemRepository.save(item);
     orderRepository.save(order);
     var savedPayment = paymentRepository.save(payment);
-    session.flush();
-    session.clear();
+    entityManager.flush();
+    entityManager.clear();
 
     return savedPayment;
   }

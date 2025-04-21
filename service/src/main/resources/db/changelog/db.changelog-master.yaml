@@ -1,0 +1,65 @@
+databaseChangeLog:
+  - logicalFilePath: db/changelog/db.changelog-master.yaml
+  - changeSet:
+      id: create_users_table
+      author: yayauheny
+      changes:
+        - sqlFile:
+            path: migration/001_create_users_table.sql
+            relativeToChangelogFile: true
+  - changeSet:
+      id: create_wallet_table
+      author: yayauheny
+      changes:
+        - sqlFile:
+            path: migration/002_create_wallet_table.sql
+            relativeToChangelogFile: true
+  - changeSet:
+      id: create_category_table
+      author: yayauheny
+      changes:
+        - sqlFile:
+            path: migration/003_create_category_table.sql
+            relativeToChangelogFile: true
+  - changeSet:
+      id: create_item_table
+      author: yayauheny
+      changes:
+        - sqlFile:
+            path: migration/004_create_item_table.sql
+            relativeToChangelogFile: true
+  - changeSet:
+      id: create_auction_table
+      author: yayauheny
+      changes:
+        - sqlFile:
+            path: migration/005_create_auction_table.sql
+            relativeToChangelogFile: true
+  - changeSet:
+      id: create_bid_table
+      author: yayauheny
+      changes:
+        - sqlFile:
+            path: migration/006_create_bid_table.sql
+            relativeToChangelogFile: true
+  - changeSet:
+      id: create_orders_table
+      author: yayauheny
+      changes:
+        - sqlFile:
+            path: migration/007_create_orders_table.sql
+            relativeToChangelogFile: true
+  - changeSet:
+      id: create_payment_table
+      author: yayauheny
+      changes:
+        - sqlFile:
+            path: migration/008_create_payment_table.sql
+            relativeToChangelogFile: true
+  - changeSet:
+      id: create_bid_hold_balance_table
+      author: yayauheny
+      changes:
+        - sqlFile:
+            path: migration/009_create_bid_hold_balance_table.sql
+            relativeToChangelogFile: true

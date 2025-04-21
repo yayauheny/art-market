@@ -5,20 +5,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 import by.yayauheny.entity.AuctionEntity;
 import by.yayauheny.entity.UserEntity;
 import by.yayauheny.integration.IntegrationBaseTest;
+import by.yayauheny.integration.annotation.IT;
 import by.yayauheny.repository.AuctionRepository;
 import by.yayauheny.repository.CategoryRepository;
 import by.yayauheny.repository.ItemRepository;
 import by.yayauheny.repository.UserRepository;
-import by.yayauheny.util.IocIntegrationTest;
 import by.yayauheny.util.TestDataUtil;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
-@ExtendWith(IocIntegrationTest.class)
+@IT
 @RequiredArgsConstructor
 public class AuctionRepositoryIT extends IntegrationBaseTest {
 
@@ -60,7 +59,8 @@ public class AuctionRepositoryIT extends IntegrationBaseTest {
 
     auctionRepository.delete(savedAuction);
 
-    session.clear();
+    entityManager.flush();
+    entityManager.clear();
     var foundAuction = auctionRepository.findById(savedAuction.getId());
     assertThat(foundAuction).isEmpty();
   }
@@ -72,10 +72,10 @@ public class AuctionRepositoryIT extends IntegrationBaseTest {
     BigDecimal updatedInitialBidPrice = BigDecimal.ZERO.setScale(2, RoundingMode.CEILING);
     savedAuction.setInitialBidPrice(updatedInitialBidPrice);
 
-    auctionRepository.update(savedAuction);
+    auctionRepository.save(savedAuction);
 
-    session.flush();
-    session.clear();
+    entityManager.flush();
+    entityManager.clear();
     var updatedAuction = auctionRepository.findById(savedAuction.getId()).get();
     assertThat(updatedAuction.getInitialBidPrice()).isEqualTo(updatedInitialBidPrice);
   }
@@ -89,8 +89,8 @@ public class AuctionRepositoryIT extends IntegrationBaseTest {
     categoryRepository.save(category);
     itemRepository.save(item);
     var savedAuction = auctionRepository.save(auction);
-    session.flush();
-    session.clear();
+    entityManager.flush();
+    entityManager.clear();
 
     return savedAuction;
   }

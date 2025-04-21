@@ -6,20 +6,19 @@ import by.yayauheny.entity.BidEntity;
 import by.yayauheny.entity.UserEntity;
 import by.yayauheny.enums.BidStatus;
 import by.yayauheny.integration.IntegrationBaseTest;
+import by.yayauheny.integration.annotation.IT;
 import by.yayauheny.repository.AuctionRepository;
 import by.yayauheny.repository.BidRepository;
 import by.yayauheny.repository.CategoryRepository;
 import by.yayauheny.repository.ItemRepository;
 import by.yayauheny.repository.UserRepository;
-import by.yayauheny.util.IocIntegrationTest;
 import by.yayauheny.util.TestDataUtil;
 import java.math.BigDecimal;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
-@ExtendWith(IocIntegrationTest.class)
+@IT
 @RequiredArgsConstructor
 class BidRepositoryIT extends IntegrationBaseTest {
 
@@ -62,7 +61,8 @@ class BidRepositoryIT extends IntegrationBaseTest {
 
     bidRepository.delete(savedBid);
 
-    session.clear();
+    entityManager.flush();
+    entityManager.clear();
     var foundBid = bidRepository.findById(savedBid.getId());
     assertThat(foundBid).isEmpty();
   }
@@ -73,10 +73,10 @@ class BidRepositoryIT extends IntegrationBaseTest {
     var savedBid = bidRepository.findById(bid.getId()).get();
     savedBid.setStatus(BidStatus.WON);
 
-    bidRepository.update(savedBid);
+    bidRepository.save(savedBid);
 
-    session.flush();
-    session.clear();
+    entityManager.flush();
+    entityManager.clear();
     var updatedAuction = bidRepository.findById(bid.getId()).get();
     assertThat(updatedAuction.getId()).isEqualTo(bid.getId());
   }
@@ -95,8 +95,8 @@ class BidRepositoryIT extends IntegrationBaseTest {
     itemRepository.save(item);
     auctionRepository.save(auction);
     var savedBid = bidRepository.save(bid);
-    session.flush();
-    session.clear();
+    entityManager.flush();
+    entityManager.clear();
 
     return savedBid;
   }

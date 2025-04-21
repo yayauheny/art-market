@@ -4,15 +4,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import by.yayauheny.dto.filter.Filter;
 import by.yayauheny.dto.filter.ItemFilterDto;
+import by.yayauheny.entity.CategoryEntity;
 import by.yayauheny.entity.ItemEntity;
 import by.yayauheny.entity.UserEntity;
 import by.yayauheny.enums.ItemTransactionStatus;
 import by.yayauheny.enums.OperatorCompareType;
 import by.yayauheny.integration.IntegrationBaseTest;
+import by.yayauheny.integration.annotation.IT;
 import by.yayauheny.repository.CategoryRepository;
 import by.yayauheny.repository.ItemRepository;
 import by.yayauheny.repository.UserRepository;
-import by.yayauheny.util.IocIntegrationTest;
 import by.yayauheny.util.TestDataUtil;
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -21,9 +22,8 @@ import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
-@ExtendWith(IocIntegrationTest.class)
+@IT
 @RequiredArgsConstructor
 class ItemRepositoryIT extends IntegrationBaseTest {
 
@@ -64,7 +64,7 @@ class ItemRepositoryIT extends IntegrationBaseTest {
 
     itemRepository.delete(savedItem);
 
-    session.clear();
+    entityManager.clear();
     var foundItem = itemRepository.findById(savedItem.getId());
     assertThat(foundItem).isEmpty();
   }
@@ -78,8 +78,8 @@ class ItemRepositoryIT extends IntegrationBaseTest {
 
     itemRepository.update(savedItem);
 
-    session.flush();
-    session.clear();
+    entityManager.flush();
+    entityManager.clear();
     var updatedItem = itemRepository.findById(savedItem.getId()).get();
     assertThat(updatedItem.getStatus()).isEqualTo(updatedStatus);
   }
@@ -92,8 +92,8 @@ class ItemRepositoryIT extends IntegrationBaseTest {
     itemRepository.save(firstItem);
     itemRepository.save(secondItem);
     itemRepository.save(thirdItem);
-    session.flush();
-    session.clear();
+    entityManager.flush();
+    entityManager.clear();
     var authorName = "Pablo Picasso";
     ItemFilterDto filter = ItemFilterDto.builder()
         .name(authorName)
@@ -134,8 +134,8 @@ class ItemRepositoryIT extends IntegrationBaseTest {
     itemRepository.save(firstItem);
     itemRepository.save(secondItem);
     itemRepository.save(thirdItem);
-    session.flush();
-    session.clear();
+    entityManager.flush();
+    entityManager.clear();
     ItemFilterDto filter = ItemFilterDto.builder()
         .categoryName("Art")
         .sellerId(seller.getId())
@@ -153,29 +153,40 @@ class ItemRepositoryIT extends IntegrationBaseTest {
     Instant now = Instant.now();
     Instant oneDayAgo = now.minus(1, ChronoUnit.DAYS);
     Instant twoDaysAgo = now.minus(2, ChronoUnit.DAYS);
+    UserEntity seller = TestDataUtil.getUser("john2.doe@example.com");
+    var category = TestDataUtil.getCategory("paintings");
+    UserEntity savedSeller = userRepository.save(seller);
+    CategoryEntity savedCategory = categoryRepository.save(category);
+    entityManager.flush();
     ItemEntity firstSoldItem = createAndSaveItem(
         "Item",
         BigDecimal.valueOf(100.00),
         oneDayAgo,
-        ItemTransactionStatus.SOLD
+        ItemTransactionStatus.SOLD,
+        savedSeller,
+        savedCategory
     );
     ItemEntity secondSoldItem = createAndSaveItem(
         "Item",
         BigDecimal.valueOf(200.00),
         twoDaysAgo,
-        ItemTransactionStatus.SOLD
+        ItemTransactionStatus.SOLD,
+        savedSeller,
+        savedCategory
     );
     ItemEntity unsoldItem = createAndSaveItem(
         "Item",
         BigDecimal.valueOf(300.00),
         now,
-        ItemTransactionStatus.RESERVED
+        ItemTransactionStatus.RESERVED,
+        savedSeller,
+        savedCategory
     );
     itemRepository.save(firstSoldItem);
     itemRepository.save(secondSoldItem);
     itemRepository.save(unsoldItem);
-    session.flush();
-    session.clear();
+    entityManager.flush();
+    entityManager.clear();
 
     long count = itemRepository.countSoldItemsBetweenDates(oneDayAgo, now);
 
@@ -189,8 +200,8 @@ class ItemRepositoryIT extends IntegrationBaseTest {
     userRepository.save(seller);
     categoryRepository.save(category);
     ItemEntity savedItem = itemRepository.save(item);
-    session.flush();
-    session.clear();
+    entityManager.flush();
+    entityManager.clear();
 
     return savedItem;
   }
@@ -216,8 +227,8 @@ class ItemRepositoryIT extends IntegrationBaseTest {
     userRepository.save(seller);
     categoryRepository.save(category);
     ItemEntity savedItem = itemRepository.save(buildItem);
-    session.flush();
-    session.clear();
+    entityManager.flush();
+    entityManager.clear();
 
     return savedItem;
   }
@@ -226,10 +237,10 @@ class ItemRepositoryIT extends IntegrationBaseTest {
       String name,
       BigDecimal price,
       Instant updatedAt,
-      ItemTransactionStatus status
+      ItemTransactionStatus status,
+      UserEntity seller,
+      CategoryEntity category
   ) {
-    UserEntity seller = TestDataUtil.getUser("john2.doe@example.com");
-    var category = TestDataUtil.getCategory("paintings");
     var item = TestDataUtil.getItem(name, category, seller);
     ItemEntity buildItem = item.toBuilder()
         .name(name)
@@ -237,11 +248,9 @@ class ItemRepositoryIT extends IntegrationBaseTest {
         .updatedAt(updatedAt)
         .status(status)
         .build();
-    userRepository.save(seller);
-    categoryRepository.save(category);
     ItemEntity savedItem = itemRepository.save(buildItem);
-    session.flush();
-    session.clear();
+    entityManager.flush();
+    entityManager.clear();
 
     return savedItem;
   }

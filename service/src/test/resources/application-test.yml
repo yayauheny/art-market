@@ -1,0 +1,5 @@
+spring:
+  datasource:
+    url: test
+    username: test
+    password: test
