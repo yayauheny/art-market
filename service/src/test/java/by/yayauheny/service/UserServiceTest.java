@@ -1,6 +1,7 @@
 package by.yayauheny.service;
 
 
+import static java.util.Collections.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
@@ -8,7 +9,7 @@ import static org.mockito.Mockito.verify;
 
 import by.yayauheny.dto.UserResponse;
 import by.yayauheny.entity.UserEntity;
-import by.yayauheny.exception.NoSuchEntityException;
+import by.yayauheny.http.exception.NoSuchEntityException;
 import by.yayauheny.mapper.UserMapper;
 import by.yayauheny.repository.UserRepository;
 import by.yayauheny.util.TestDataUtil;
@@ -28,9 +29,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class UserServiceTest {
 
   @Mock
-  UserRepository userRepository;
-  UserMapper userMapper = Mappers.getMapper(UserMapper.class);
-  UserService userService;
+  private UserRepository userRepository;
+  private UserMapper userMapper = Mappers.getMapper(UserMapper.class);
+  private UserService userService;
 
   @BeforeEach
   void setUp() {
@@ -39,8 +40,8 @@ class UserServiceTest {
   }
 
   @Test
-  void findAll_noUsers_returnEmptyList() {
-    doReturn(Collections.emptyList()).when(userRepository).findAll();
+  void findAll_noUsers_returnsEmptyList() {
+    doReturn(emptyList()).when(userRepository).findAll();
 
     List<UserResponse> foundUsers = userService.findAll();
 
@@ -49,7 +50,7 @@ class UserServiceTest {
   }
 
   @Test
-  void findAll_usersExists_returnAllUsers() {
+  void findAll_usersExists_returnsAllUsers() {
     List<UserEntity> users = List.of(
         TestDataUtil.getUser("ex1@mail.ru"),
         TestDataUtil.getUser("ex2@mail.ru"),
@@ -76,7 +77,7 @@ class UserServiceTest {
   }
 
   @Test
-  void findById_userExist_returnUserResponse() {
+  void findById_userExist_returnsUserResponse() {
     var userId = UUID.fromString("57f23e0b-bdb6-454b-b5a8-82493b9f963a");
     var user = TestDataUtil.getUser("ex1@mail.ru").toBuilder()
         .id(userId)
