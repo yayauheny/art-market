@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @Transactional
-public class UserControllerIT extends IntegrationBaseTest {
+public class UserRestControllerIT extends IntegrationBaseTest {
 
   @Autowired
   private MockMvc mockMvc;

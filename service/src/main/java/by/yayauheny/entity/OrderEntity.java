@@ -30,7 +30,7 @@ import lombok.ToString;
 @ToString(exclude = {"user", "item", "payments"})
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "orders")
+@Entity(name = "order")
 public class OrderEntity {
 
   @Id

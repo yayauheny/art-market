@@ -1,10 +1,9 @@
-package by.yayauheny.repository;
+package by.yayauheny.repository.filter;
 
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Predicate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Function;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -19,7 +18,7 @@ public class QPredicate {
   }
 
   public <T> QPredicate add(T object, Function<T, Predicate> function) {
-    if (Objects.nonNull(object)) {
+    if (object != null) {
       predicates.add(function.apply(object));
     }
     return this;

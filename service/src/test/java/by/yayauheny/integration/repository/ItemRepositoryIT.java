@@ -3,7 +3,7 @@ package by.yayauheny.integration.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import by.yayauheny.dto.filter.Filter;
-import by.yayauheny.dto.filter.ItemFilterDto;
+import by.yayauheny.dto.filter.ItemFilter;
 import by.yayauheny.entity.CategoryEntity;
 import by.yayauheny.entity.ItemEntity;
 import by.yayauheny.entity.UserEntity;
@@ -85,7 +85,7 @@ class ItemRepositoryIT extends IntegrationBaseTest {
   }
 
   @Test
-  void findItemsByFilter_withNameContainingPabloPicassoAndPriceGreaterThanOrEqualTo300_returnMatchingItems() {
+  void findItemsByFilter_withNameContainingAndPriceGOETo300_returnMatchingItems() {
     var firstItem = createAndSaveItem("Blue Room, Pablo Picasso", BigDecimal.valueOf(59999.99));
     var secondItem = createAndSaveItem("Life, Pablo Picasso", BigDecimal.valueOf(299.99));
     var thirdItem = createAndSaveItem("Dream, Pablo Picasso", BigDecimal.valueOf(999999.99));
@@ -95,7 +95,7 @@ class ItemRepositoryIT extends IntegrationBaseTest {
     entityManager.flush();
     entityManager.clear();
     var authorName = "Pablo Picasso";
-    ItemFilterDto filter = ItemFilterDto.builder()
+    ItemFilter filter = ItemFilter.builder()
         .name(authorName)
         .price(new Filter<>(BigDecimal.valueOf(300), OperatorCompareType.GOE))
         .build();
@@ -136,7 +136,7 @@ class ItemRepositoryIT extends IntegrationBaseTest {
     itemRepository.save(thirdItem);
     entityManager.flush();
     entityManager.clear();
-    ItemFilterDto filter = ItemFilterDto.builder()
+    ItemFilter filter = ItemFilter.builder()
         .categoryName("Art")
         .sellerId(seller.getId())
         .build();
