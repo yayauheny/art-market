@@ -6,33 +6,24 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import java.math.BigDecimal;
-import java.time.Instant;
-import java.util.UUID;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 
 @Data
-@Builder(toBuilder = true)
-@EqualsAndHashCode(exclude = {"auction", "user"})
-@ToString(exclude = {"auction", "user"})
+@SuperBuilder(toBuilder = true)
+@EqualsAndHashCode(callSuper = true, exclude = {"auction", "user"})
+@ToString(callSuper = true, exclude = {"auction", "user"})
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "bid")
-public class BidEntity {
-
-  @Id
-  @GeneratedValue(strategy = GenerationType.UUID)
-  private UUID id;
+public class BidEntity extends BaseEntity {
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "auction_id", nullable = false)
@@ -48,10 +39,4 @@ public class BidEntity {
 
   @Column(nullable = false, precision = 8, scale = 2)
   private BigDecimal price;
-
-  @Column(nullable = false, insertable = false, updatable = false)
-  private Instant createdAt;
-
-  @Column(nullable = false, insertable = false)
-  private Instant updatedAt;
 }

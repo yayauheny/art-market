@@ -20,7 +20,6 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 
-@IT
 @RequiredArgsConstructor
 class BidHoldBalanceRepositoryIT extends IntegrationBaseTest {
 

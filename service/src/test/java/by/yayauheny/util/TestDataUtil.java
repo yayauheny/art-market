@@ -1,5 +1,8 @@
 package by.yayauheny.util;
 
+import by.yayauheny.dto.UserResponse;
+import by.yayauheny.dto.UserSaveRequest;
+import by.yayauheny.dto.UserUpdateRequest;
 import by.yayauheny.entity.AuctionEntity;
 import by.yayauheny.entity.BidEntity;
 import by.yayauheny.entity.BidHoldBalanceEntity;
@@ -28,11 +31,49 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class TestDataUtil {
 
+  public static UserResponse toUserResponse(UserEntity user) {
+    return new UserResponse(
+        user.getId(),
+        user.getEmail(),
+        user.getName(),
+        user.getLastName(),
+        user.getRole(),
+        user.getAddress(),
+        user.getBirthDate()
+    );
+  }
+
+  public static UserEntity updateEntity(UserEntity user, UserUpdateRequest request) {
+    return user.toBuilder()
+        .name(request.name())
+        .lastName(request.lastName())
+        .role(request.role())
+        .address(request.address())
+        .birthDate(request.birthDate())
+        .build();
+  }
+
+  public static UserEntity toUserEntity(UserSaveRequest request) {
+    return UserEntity.builder()
+        .email(request.email())
+        .name(request.name())
+        .lastName(request.lastName())
+        .password(request.password())
+        .role(request.role())
+        .address(request.address())
+        .birthDate(request.birthDate())
+        .build();
+  }
+
   public static UserEntity getUser(String email) {
+    return getUser(email, "John");
+  }
+
+  public static UserEntity getUser(String email, String name) {
     return UserEntity.builder()
         .email(email)
+        .name(name)
         .password("securePassword123")
-        .name("John")
         .lastName("Doe")
         .role(Role.USER)
         .address("123 Main St, Springfield, IL, 62701")

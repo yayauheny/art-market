@@ -10,7 +10,6 @@ import by.yayauheny.entity.UserEntity;
 import by.yayauheny.enums.ItemTransactionStatus;
 import by.yayauheny.enums.OperatorCompareType;
 import by.yayauheny.integration.IntegrationBaseTest;
-import by.yayauheny.integration.annotation.IT;
 import by.yayauheny.repository.CategoryRepository;
 import by.yayauheny.repository.ItemRepository;
 import by.yayauheny.repository.UserRepository;
@@ -23,7 +22,6 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 
-@IT
 @RequiredArgsConstructor
 class ItemRepositoryIT extends IntegrationBaseTest {
 
@@ -76,9 +74,8 @@ class ItemRepositoryIT extends IntegrationBaseTest {
     ItemTransactionStatus updatedStatus = ItemTransactionStatus.ACTIVE;
     savedItem.setStatus(updatedStatus);
 
-    itemRepository.update(savedItem);
+    itemRepository.saveAndFlush(savedItem);
 
-    entityManager.flush();
     entityManager.clear();
     var updatedItem = itemRepository.findById(savedItem.getId()).get();
     assertThat(updatedItem.getStatus()).isEqualTo(updatedStatus);
@@ -199,8 +196,7 @@ class ItemRepositoryIT extends IntegrationBaseTest {
     var item = TestDataUtil.getItem("Still life Raphael", category, seller);
     userRepository.save(seller);
     categoryRepository.save(category);
-    ItemEntity savedItem = itemRepository.save(item);
-    entityManager.flush();
+    ItemEntity savedItem = itemRepository.saveAndFlush(item);
     entityManager.clear();
 
     return savedItem;
@@ -224,10 +220,9 @@ class ItemRepositoryIT extends IntegrationBaseTest {
         .name(name)
         .price(price)
         .build();
-    userRepository.save(seller);
-    categoryRepository.save(category);
-    ItemEntity savedItem = itemRepository.save(buildItem);
-    entityManager.flush();
+    userRepository.saveAndFlush(seller);
+    categoryRepository.saveAndFlush(category);
+    ItemEntity savedItem = itemRepository.saveAndFlush(buildItem);
     entityManager.clear();
 
     return savedItem;

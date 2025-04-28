@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import by.yayauheny.entity.WalletEntity;
 import by.yayauheny.integration.IntegrationBaseTest;
-import by.yayauheny.integration.annotation.IT;
 import by.yayauheny.repository.UserRepository;
 import by.yayauheny.repository.WalletRepository;
 import by.yayauheny.util.TestDataUtil;
@@ -12,7 +11,6 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 
-@IT
 @RequiredArgsConstructor
 class WalletRepositoryIT extends IntegrationBaseTest {
 
