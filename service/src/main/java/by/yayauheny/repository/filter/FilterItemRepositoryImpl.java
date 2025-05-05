@@ -15,6 +15,7 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import java.time.Instant;
 import java.util.List;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -23,10 +24,7 @@ public class FilterItemRepositoryImpl implements FilterItemRepository {
   private final EntityManager entityManager;
 
   @Override
-  public List<ItemEntity> findAllByFilter(ItemFilter filter) {
-    if (filter == null) {
-      throw new IllegalArgumentException("Filter cannot be empty");
-    }
+  public List<ItemEntity> findAllByFilter(@NonNull ItemFilter filter) {
     var itemFilterPredicate = QPredicate.builder()
         .add(filter.getCategoryName(), itemEntity.category.name::eq)
         .add(filter.getSellerId(), itemEntity.seller.id::eq)

@@ -6,7 +6,6 @@ import by.yayauheny.entity.PaymentEntity;
 import by.yayauheny.entity.UserEntity;
 import by.yayauheny.enums.PaymentStatus;
 import by.yayauheny.integration.IntegrationBaseTest;
-import by.yayauheny.integration.annotation.IT;
 import by.yayauheny.repository.CategoryRepository;
 import by.yayauheny.repository.ItemRepository;
 import by.yayauheny.repository.OrderRepository;
@@ -18,7 +17,6 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 
-@IT
 @RequiredArgsConstructor
 class PaymentRepositoryIT extends IntegrationBaseTest {
 
