@@ -23,7 +23,7 @@ public class TestcontainersInitializer implements
     TestPropertyValues.of(
         "spring.datasource.url=" + postgres.getJdbcUrl(),
         "spring.datasource.username=" + postgres.getUsername(),
-        "spring.datasource.password=" + postgres.getPassword()
+        "spring.datasource.rawPassword=" + postgres.getPassword()
     ).applyTo(ctx.getEnvironment());
   }
 }

@@ -115,7 +115,7 @@ class UserServiceTest {
     @Test
     void save_validUserSave_returnsSavedUserEntity() {
       var userId = UUID.fromString("57f23e0b-bdb6-454b-b5a8-82493b9f963a");
-      var hashedPassword = "hashed password";
+      var hashedPassword = "hashed rawPassword";
       var userSaveRequest = new UserSaveRequest("ex1@mail.ru",
           "Nikolay",
           "Ivanov",

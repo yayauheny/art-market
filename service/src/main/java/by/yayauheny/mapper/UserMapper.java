@@ -28,7 +28,7 @@ public interface UserMapper {
   @Mappings({
       @Mapping(
           target = "password",
-          qualifiedByName = {"MapperUtil", "encodePassword"}, source = "password"
+          qualifiedByName = {"MapperUtil", "encodePassword"}, source = "rawPassword"
       ),
       @Mapping(target = "email", qualifiedByName = {"MapperUtil", "normalizeEmail"})
   }

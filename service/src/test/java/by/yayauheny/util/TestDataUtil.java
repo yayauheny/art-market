@@ -58,7 +58,7 @@ public class TestDataUtil {
         .email(request.email())
         .name(request.name())
         .lastName(request.lastName())
-        .password(request.password())
+        .password(request.rawPassword())
         .role(request.role())
         .address(request.address())
         .birthDate(request.birthDate())
