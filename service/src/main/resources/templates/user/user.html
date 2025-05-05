@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="#{user.title}">User</title>
+</head>
+<body>
+<div th:insert="~{fragment :: header}"></div>
+
+<form th:action="@{/users/{userId}/update(userId=${user.id()})}" method="post">
+  <label for="name">
+    <span th:text="#{user.name} + ':'">Name:</span>
+    <input id="name" type="text" name="name" th:value="${user.name()}">
+  </label><br>
+
+  <label for="lastName">
+    <span th:text="#{user.lastName} + ':'">Lastname:</span>
+    <input id="lastName" type="text" name="lastName" th:value="${user.lastName()}">
+  </label><br>
+
+  <div>
+    <span th:text="#{user.role} + ':'">Role:</span>
+    <div th:each="role : ${roles}">
+      <input th:id="${role}" type="radio" name="role" th:value="${role}"
+             th:checked="${role == user.role()}">
+      <label th:for="${role}" th:text="${role}">Role</label>
+    </div>
+  </div>
+
+  <label for="address">
+    <span th:text="#{user.address} + ':'">Address:</span>
+    <input id="address" type="text" name="address" th:value="${user.address()}">
+  </label><br>
+
+  <label for="birthDate">
+    <span th:text="#{user.birthDate} + ':'">Birthdate:</span>
+    <input id="birthDate" type="date" name="birthDate" th:value="${user.birthDate()}">
+  </label><br>
+
+  <button type="submit" th:text="#{user.updateButton}">Update</button>
+</form>
+
+<form th:action="@{/users/{userId}/delete(userId=${user.id()})}"
+      th:if="${user.role().name() == 'ADMIN'}" method="post">
+  <button type="submit" th:text="#{user.deleteButton}">Remove</button>
+</form>
+</body>
+</html>

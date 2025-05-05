@@ -1,5 +1,12 @@
 package by.yayauheny.enums;
 
-public enum Role {
-  ADMIN, USER, SELLER
+import org.springframework.security.core.GrantedAuthority;
+
+public enum Role implements GrantedAuthority {
+  ADMIN, USER, SELLER;
+
+  @Override
+  public String getAuthority() {
+    return name();
+  }
 }

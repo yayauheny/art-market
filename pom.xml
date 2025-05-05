@@ -24,6 +24,7 @@
     <maven.compiler.target>21</maven.compiler.target>
     <openapi.webmvc.version>2.2.0</openapi.webmvc.version>
     <org.mapstruct.version>1.6.3</org.mapstruct.version>
+    <thymeleaf.extras.security>3.1.0.RELEASE</thymeleaf.extras.security>
   </properties>
 
   <build>

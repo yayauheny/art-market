@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="#{register.title}">Register</title>
+</head>
+<body>
+<form th:action="@{/users}" method="post">
+  <label for="email">
+    <span th:text="#{register.email} + ':'">Email:</span>
+    <input id="email" type="email" name="email" th:value="${user.email()}">
+  </label><br>
+
+  <label for="name">
+    <span th:text="#{register.name} + ':'">Name:</span>
+    <input id="name" type="text" name="name" th:value="${user.name()}">
+  </label><br>
+
+  <label for="lastName">
+    <span th:text="#{register.lastName} + ':'">Lastname:</span>
+    <input id="lastName" type="text" name="lastName" th:value="${user.lastName()}">
+  </label><br>
+
+  <label for="rawPassword">
+    <span th:text="#{register.password} + ':'">Password:</span>
+    <input id="rawPassword" type="password" name="rawPassword">
+  </label><br>
+
+  <div>
+    <span th:text="#{register.role} + ':'">Role:</span>
+    <div th:each="role : ${roles}">
+      <input th:id="${role}" type="radio" name="role" th:value="${role}"
+             th:checked="${role == user.role()}">
+      <label th:for="${role}" th:text="${role}">Role name</label>
+    </div>
+  </div>
+
+  <label for="address">
+    <span th:text="#{register.address} + ':'">Address:</span>
+    <input id="address" type="text" name="address" th:value="${user.address()}">
+  </label><br>
+
+  <label for="birthDate">
+    <span th:text="#{register.birthDate} + ':'">Birthdate:</span>
+    <input id="birthDate" type="date" name="birthDate" th:value="${user.birthDate()}">
+  </label><br>
+
+  <button type="submit" th:text="#{register.button}">Register</button>
+</form>
+</body>
+</html>

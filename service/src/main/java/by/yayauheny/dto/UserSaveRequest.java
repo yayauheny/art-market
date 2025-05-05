@@ -19,7 +19,9 @@ public record UserSaveRequest(
     String lastName,
 
     @Size(min = 6)
-    String password,
+    @NotBlank
+    String rawPassword,
+
     Role role,
 
     @Size(max = 256)
